@@ -1,0 +1,26 @@
+{
+  "params": {
+    "t": "vn",
+    "ms": 1773582271427,
+    "n": "Ricardo",
+    "g": "m",
+    "f": true,
+    "data": "",
+    "d": 20,
+    "m": 6,
+    "a": 1975,
+    "h": 23,
+    "min": 4,
+    "gmt": -3,
+    "lat": -36.25,
+    "lon": -69.25,
+    "alt": 1440,
+    "c": "Malargue Mendoza Argentina",
+    "hsys": "T",
+    "shared": false,
+    "extId": "id_20_6_1975_23_4_-3_-36.25_-69.25_1440_vn_T",
+    "nc": "Ricardo",
+    "msmod": 1774048414820
+  },
+  "exts": []
+}

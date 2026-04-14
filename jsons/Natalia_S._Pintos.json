@@ -1,0 +1,24 @@
+{
+  "params": {
+    "n": "Natalia S. Pintos",
+    "d": 8,
+    "m": 9,
+    "a": 1980,
+    "h": 17,
+    "min": 0,
+    "gmt": -3,
+    "lat": -34.769249,
+    "lon": -58.6480318,
+    "alt": 0,
+    "c": "Gonzalez Catán Buenos Aires Argentina",
+    "t": "vn",
+    "s": "T",
+    "ms": 1622602994892,
+    "msmod": 1773770724101,
+    "f": true,
+    "g": "f",
+    "nc": "Natalia S. Pintos",
+    "nf": "Sin firma"
+  },
+  "exts": []
+}
