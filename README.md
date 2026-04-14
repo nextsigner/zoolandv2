@@ -8,9 +8,11 @@ Este proyecto está configurado solo arm64-v8a.
 Si quieres compilar para todas las ABIS debes modificar lo siguiente en el archiv CMakeLists.txt:
 
 QT_ANDROID_BUILD_ALL_ABIS OFF
+
 QT_ANDROID_ABIS "arm64-v8a"
 
 por 
 
 QT_ANDROID_BUILD_ALL_ABIS ON
+
 Borrar esta línea o comentarla #QT_ANDROID_ABIS "arm64-v8a"
