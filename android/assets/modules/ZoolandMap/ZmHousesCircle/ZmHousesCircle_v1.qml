@@ -1,9 +1,24 @@
 import QtQuick
-
+import ZoolandMap.ZmHousesCircle.ZmHouseArc 1.0
 Rectangle{
     id: r
-    width: 100
+    width: parent.width
     height: width
-    color: '#ff8833'
+    color: 'transparent'
+    border.width: 0//10
+    border.color: 'blue'
+    radius: width*0.5
     anchors.centerIn: parent
+
+    Repeater{
+        model: 12
+        ZmHouseArc{
+            width: r.width
+            height: width
+            rotation: (360-(30*index))//+180
+            ih: index
+            anchors.centerIn: parent
+        }
+    }
+
 }

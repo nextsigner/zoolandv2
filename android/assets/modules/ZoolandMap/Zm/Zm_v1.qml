@@ -13,11 +13,13 @@ Rectangle{
     ZmSignsCircle{
         wrz: r.wrz
         wbrz: r.wrz*0.2
-        width: parent.width
+        width: parent.width-r.wrz
         height: parent.height
+        anchors.centerIn: parent
     }
     ZmHousesCircle{
         width: parent.width
         height: parent.height
+        anchors.centerIn: parent
     }
 }

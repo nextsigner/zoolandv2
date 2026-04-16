@@ -12,9 +12,11 @@ Rectangle {
     property alias zm: zm
     property int fs: 50
     property int wrz: r.fs*2
+    property int bodiSize: r.fs*2
 
     //Status
     property int currentIndexSign: -1
+    property int currentIndexHouse: -1
 
 
 
@@ -55,8 +57,8 @@ Rectangle {
             }
             Zm{
                 id: zm
-                width: parent.width
-                height: parent.height
+                width: parent.width*0.8
+                height: parent.height*0.8
                 wrz: r.wrz
             }
         }
