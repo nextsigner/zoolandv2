@@ -1,5 +1,6 @@
 import QtQuick
 import ZoolandMap.ZmSignsCircle 1.0
+import ZoolandMap.ZmHousesCircle 1.0
 Rectangle{
     id: r
     width: parent.width
@@ -11,6 +12,11 @@ Rectangle{
     property int wrz: 0
     ZmSignsCircle{
         wrz: r.wrz
+        wbrz: r.wrz*0.2
+        width: parent.width
+        height: parent.height
+    }
+    ZmHousesCircle{
         width: parent.width
         height: parent.height
     }

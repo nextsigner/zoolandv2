@@ -13,6 +13,9 @@ Rectangle {
     property int fs: 50
     property int wrz: r.fs*2
 
+    //Status
+    property int currentIndexSign: -1
+
 
 
     Flickable {

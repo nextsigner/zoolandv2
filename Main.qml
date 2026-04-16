@@ -15,6 +15,7 @@ ApplicationWindow {
     title: 'ZoolAnd'
     color: 'black'
     property alias app: r
+    property var zoolMap
     property bool dev: false
     property int fs: Screen.width*0.05
 
@@ -443,7 +444,7 @@ ApplicationWindow {
                                 let c='import QtQuick\n'
                                 c+='import ZoolandMap 1.0\n'
                                 c+='ZoolandMap{fs:'+r.fs+';}\n'
-                                Qt.createQmlObject(c, xZoolandMap, 'zoolandmap-code')
+                                app.zoolMap=Qt.createQmlObject(c, xZoolandMap, 'zoolandmap-code')
                             }
                         }
                         Button{
