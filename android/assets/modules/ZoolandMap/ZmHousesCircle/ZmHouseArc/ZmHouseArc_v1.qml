@@ -23,12 +23,12 @@ Rectangle{
         }
     }
     Rectangle{
-        width: parent.width+zoolMap.bodiSize*2
+        width: parent.width+zoolMap.bodieSize*2
         height: r.wl
         color: 'transparent'
         anchors.centerIn: parent
         Rectangle{
-            width: (parent.width*0.5)-zoolMap.bodiSize*0.5
+            width: (parent.width*0.5)-zoolMap.bodieSize*0.5
             height: parent.height
             color: r.cl
             //anchors.left: parent.left
@@ -36,15 +36,13 @@ Rectangle{
             anchors.right: parent.horizontalCenter
             //anchors.rightMargin: 0-zoolMap.bodiSize
             Rectangle{
-                width: zoolMap.bodiSize
+                width: zoolMap.bodieSize*2
                 height: width
                 radius: width*0.5
                 color: 'transparent'
                 border.width: r.wl
                 border.color: r.cl
                 anchors.verticalCenter: parent.verticalCenter
-                //anchors.left: parent.right
-                //anchors.leftMargin: zoolMap.bodiSize
                 anchors.right: parent.left
                 MouseArea{
                     anchors.fill: parent
@@ -52,7 +50,7 @@ Rectangle{
                 }
                 Text{
                     text: ''+parseInt(r.ih+1)
-                    font.pixelSize: zoolMap.bodiSize*0.65
+                    font.pixelSize: zoolMap.bodieSize*0.65
                     color: r.cl
                     rotation: 360-r.rotation
                     horizontalAlignment: Text.AlignHCenter

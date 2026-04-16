@@ -12,11 +12,20 @@ Rectangle {
     property alias zm: zm
     property int fs: 50
     property int wrz: r.fs*2
-    property int bodiSize: r.fs*2
+
+    //Bodies
+    property int bodieSize: r.fs
+    property color bodieColor: 'white'
 
     //Status
     property int currentIndexSign: -1
     property int currentIndexHouse: -1
+    property real signCircleRot: 0.0
+
+    //Astrología
+    property var aBodies: ['Sol', 'Luna', 'Mercurio', 'Venus', 'Marte', 'Júpiter', 'Saturno', 'Urano', 'Neptuno', 'Plutón', 'N.Sur', 'N.Norte', 'Quirón', 'Selena', 'Lilith', 'Pholus', 'Ceres', 'Pallas', 'Juno', 'Vesta']
+    property var bodiesRes: ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 's', 'n', 'hiron', 'selena', 'lilith', 'pholus', 'ceres', 'pallas', 'juno', 'vesta']
+
 
 
 

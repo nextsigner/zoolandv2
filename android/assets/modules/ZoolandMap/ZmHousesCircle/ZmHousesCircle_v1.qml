@@ -10,15 +10,23 @@ Rectangle{
     radius: width*0.5
     anchors.centerIn: parent
 
-    Repeater{
-        model: 12
-        ZmHouseArc{
-            width: r.width
-            height: width
-            rotation: (360-(30*index))//+180
-            ih: index
-            anchors.centerIn: parent
+    Item{
+        id: xHouses
+        anchors.fill: parent
+        Repeater{
+            model: 12
+            ZmHouseArc{
+                width: r.width
+                height: width
+                rotation: (360-(30*index))//+180
+                ih: index
+                anchors.centerIn: parent
+            }
         }
     }
-
+    function load(j){
+        for(var i=0;i<12;i++){
+            xHousess.children[i].rotation=360-(360-j.ph['h1'].gdec)-j.pc['c'+i].gdec
+        }
+    }
 }
