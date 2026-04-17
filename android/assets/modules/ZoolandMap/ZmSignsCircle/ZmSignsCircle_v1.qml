@@ -6,7 +6,7 @@ Rectangle{
     id: r
     width: 500
     height: 500
-    color: 'green'
+    color: 'transparent'
     property int wrz: 0
     property int wbrz: 0
     Repeater{

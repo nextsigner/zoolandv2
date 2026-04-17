@@ -59,14 +59,14 @@ Rectangle {
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-                    app.zoolMap.currentIndexSign=r.is
+                    zoolMap.currentIndexSign=r.is
                 }
             }
             Image{
                 width: parent.width*0.75
                 height: width
                 source: 'assets:/imgs/signos/'+r.is+'.svg'
-                rotation: 360-r.rotation
+                rotation: 360-r.rotation-zoolMap.signCircleRot
                 anchors.centerIn: parent
             }
         }

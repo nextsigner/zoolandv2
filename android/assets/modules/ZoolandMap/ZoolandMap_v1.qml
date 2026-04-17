@@ -11,11 +11,17 @@ Rectangle {
     clip: true
     property alias zm: zm
     property int fs: 50
-    property int wrz: r.fs*2
+    property int wrz: r.fs
 
     //Bodies
     property int bodieSize: r.fs
     property color bodieColor: 'white'
+    property int posMaxInt: 0
+    property int posMaxExt: 0
+
+    //Houses
+    property int wl: app.fs*0.1
+    property color cl: 'white'
 
     //Status
     property int currentIndexSign: -1
@@ -49,7 +55,7 @@ Rectangle {
             transformOrigin: Item.Center
 
             // --- TU CONTENIDO ---
-            Rectangle {
+            /*Rectangle {
                 anchors.centerIn: parent
                 width: parent.width * 0.7
                 height: width
@@ -63,7 +69,7 @@ Rectangle {
                     color: "white"
                     horizontalAlignment: Text.AlignHCenter
                 }
-            }
+            }*/
             Zm{
                 id: zm
                 width: parent.width*0.8
@@ -77,6 +83,8 @@ Rectangle {
             target: container
             minimumScale: 0.5
             maximumScale: 8.0
+            minimumRotation: 0
+            maximumRotation: 0
         }
 
         WheelHandler {
@@ -84,13 +92,13 @@ Rectangle {
             target: container
             acceptedModifiers: Qt.ControlModifier
             onWheel: (event)=> {
-                let scaleStep = 0.1
-                let delta = event.angleDelta.y > 0 ? (1 + scaleStep) : (1 - scaleStep);
-                let newScale = container.scale * delta;
-                if (newScale >= 0.5 && newScale <= 8.0) {
-                    container.scale = newScale;
-                }
-            }
+                         let scaleStep = 0.1
+                         let delta = event.angleDelta.y > 0 ? (1 + scaleStep) : (1 - scaleStep);
+                         let newScale = container.scale * delta;
+                         if (newScale >= 0.5 && newScale <= 8.0) {
+                             container.scale = newScale;
+                         }
+                     }
         }
     }
 }

@@ -2,6 +2,7 @@ import QtQuick
 import ZoolandMap.ZmSignsCircle 1.0
 import ZoolandMap.ZmHousesCircle 1.0
 import ZoolandMap.ZmBodiesCircle 1.0
+import ZoolandMap.ZmAspsCircle 1.0
 
 Rectangle{
     id: r
@@ -24,6 +25,9 @@ Rectangle{
         width: parent.width
         height: parent.height
         anchors.centerIn: parent
+    }
+    ZmAspsCircle{
+        id: zmAspsCircle
     }
     ZmBodiesCircle{
         id: zmBodiesCircle

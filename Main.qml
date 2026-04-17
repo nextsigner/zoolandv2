@@ -6,6 +6,8 @@ import swe 1.0
 import unik.Unik 1.0
 import Qt.labs.settings
 
+import ZoolandMap 1.0
+
 ApplicationWindow {
     id: r
     width: Screen.width
@@ -15,7 +17,7 @@ ApplicationWindow {
     title: 'ZoolAnd'
     color: 'black'
     property alias app: r
-    property var zoolMap
+    //property var zoolMap
     property bool dev: false
     property int fs: Screen.width*0.05
 
@@ -60,6 +62,9 @@ ApplicationWindow {
                 console.log("Error parseando JSON: ", e)
             }
         }
+    }
+    onCurrentJsonChanged: {
+        if(zoolMap)zoolMap.zm.load(currentJson)
     }
     Rectangle{
         id: xApp
@@ -331,7 +336,12 @@ ApplicationWindow {
                     id: xZoolandMap
                     width: Screen.width
                     height: width
-                    visible: apps.showZoolandMap
+                    //visible: apps.showZoolandMap
+                    ZoolandMap{
+                        id: zoolMap
+                        fs:r.fs
+                        visible: r.uFilePathLoaded!==''
+                    }
                 }
                 Text{
                     id: txt

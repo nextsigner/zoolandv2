@@ -4,10 +4,11 @@ import QtQuick.Effects
 
 Rectangle{
     id: r
-    width: parent.width
+    width: parent.width-(zoolMap.bodieSize*pos)
     height: width
     color: 'transparent'
     property int numBodie: -1
+    property int pos: 0
     Rectangle{
         id: ejeBodie
         width: parent.width*0.5
@@ -20,11 +21,17 @@ Rectangle{
             height: width
             radius: width*0.5
             color: 'transparent'
+            border.width: 0
+            border.color: 'red'
             anchors.verticalCenter: parent.verticalCenter
-            rotation: 360-r.rotation-45-zoolMap.signCircleRot
+            rotation: 360-r.rotation//+zoolMap.signCircleRot
+            //rotation: 360-r.rotation-zoolMap.signCircleRot
             Image{
                 id: img
-                anchors.fill: parent
+                //anchors.fill: parent
+                width: parent.width
+                height: parent.height
+                anchors.centerIn: parent
                 source: 'assets:/imgs/imgs_v2/glifos/'+zoolMap.bodiesRes[r.numBodie]+'.svg'
 
                 sourceSize: Qt.size(width, height)

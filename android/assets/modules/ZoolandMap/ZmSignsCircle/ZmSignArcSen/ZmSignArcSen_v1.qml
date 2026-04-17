@@ -9,7 +9,7 @@ Rectangle {
     property int wbrz: wrz*0.15
     property color c: 'red'
     property int wrz: 0
-    property int is: 0
+    property int is: -1
     rotation: 0-(30*is+15+90)
     Shape {
         id: arco
@@ -18,7 +18,7 @@ Rectangle {
         // El tamaño del Shape debe contener el radio + la mitad del grosor del borde
         width: parent.width
         height: parent.height
-        visible: app.zoolMap.currentIndexSign===r.is
+        visible: zoolMap.currentIndexSign===r.is
 
         ShapePath {
             strokeColor: r.c

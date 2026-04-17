@@ -5,11 +5,13 @@ Rectangle{
     color: 'transparent'
     anchors.centerIn: parent
     property int ih: 0
-    property color cl: 'red'
-    property int wl: app.fs*0.25
+    property color cl: zoolMap.cl
     SequentialAnimation on cl{
         running: zoolMap.currentIndexHouse===r.ih
         loops: Animation.Infinite
+        onRunningChanged: {
+            if(!running)r.cl=zoolMap.cl
+        }
 
         ColorAnimation {
             from: "red"
@@ -24,23 +26,20 @@ Rectangle{
     }
     Rectangle{
         width: parent.width+zoolMap.bodieSize*2
-        height: r.wl
+        height: zoolMap.wl
         color: 'transparent'
         anchors.centerIn: parent
         Rectangle{
             width: (parent.width*0.5)-zoolMap.bodieSize*0.5
             height: parent.height
             color: r.cl
-            //anchors.left: parent.left
-            //anchors.leftMargin: 0-width
             anchors.right: parent.horizontalCenter
-            //anchors.rightMargin: 0-zoolMap.bodiSize
             Rectangle{
-                width: zoolMap.bodieSize*2
+                width: zoolMap.bodieSize
                 height: width
                 radius: width*0.5
                 color: 'transparent'
-                border.width: r.wl
+                border.width: zoolMap.wl
                 border.color: r.cl
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.left
@@ -49,8 +48,8 @@ Rectangle{
                     onClicked: zoolMap.currentIndexHouse=r.ih
                 }
                 Text{
-                    text: ''+parseInt(r.ih+1)
-                    font.pixelSize: zoolMap.bodieSize*0.65
+                    text: '<b>'+parseInt(r.ih+1)+'</b>'
+                    font.pixelSize: zoolMap.bodieSize*0.85
                     color: r.cl
                     rotation: 360-r.rotation
                     horizontalAlignment: Text.AlignHCenter
