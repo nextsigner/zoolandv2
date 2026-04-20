@@ -11,7 +11,10 @@ Item{
 
     Item{
         id: xBodies
-        anchors.fill: parent
+        //anchors.fill: parent
+        width: parent.width
+        height: parent.height
+        anchors.centerIn: parent
         Repeater{
             model: zoolMap.aBodies
             ZmBodie{
@@ -20,6 +23,12 @@ Item{
             }
         }
     }
+    /*Timer{
+        running: true
+        repeat: true
+        interval: 3000
+        onTriggered: setAspsCircleWidth()
+    }*/
     function load(j){
         r.aGdecsInt=[]
         r.aGdecsExt=[]
@@ -35,74 +44,65 @@ Item{
             }else{
                 r.aGdecsExt.push(j.pc['c'+i].gdec)
             }
+            xBodies.children[i].pos=0
         }
         ordenarPosiciones()
     }
-    function ordenarPosiciones(){
-        let aGdecs
-        if(!r.isBack){
-            aGdecs=r.aGdecsInt
-        }else{
-            aGdecs=r.aGdecsExt
+
+
+
+    function ordenarPosiciones() {
+        let aGdecs = !r.isBack ? r.aGdecsInt : r.aGdecsExt;
+        let maxPos = 0;
+
+        // 1. Limpiamos posiciones previas
+        for(var i = 0; i < aGdecs.length; i++){
+            xBodies.children[i].pos = 0;
         }
-        let maxPos=0
-        let aBodiesPos=[]
-        for(var i=0;i<aGdecs.length;i++){
-            aBodiesPos.push(1)
-            let objAs=xBodies.children[i]//getAs(i)
-            objAs.pos=0
-        }
-        for(i=1;i<aGdecs.length;i++){
-            for(var i2=i-1;i2<aGdecs.length;i2++){
-                let haa=hayAlgoAhi(aGdecs[i], aGdecs[i2])
-                if(haa && i!==i2){
-                    //zpn.log('ordenando: '+aGdecs[i])
-                    //zpn.log('haa '+zm.aBodies[i]+' '+zm.aBodies[i2])
-                    aBodiesPos[i2]++
-                    if(aBodiesPos[i2]>maxPos){
-                        maxPos++
+
+        // 2. Recorremos cada cuerpo para encontrarle su nivel 'pos' ideal
+        for(var i = 0; i < aGdecs.length; i++){
+            let objActual = xBodies.children[i];
+            let nivelEncontrado = false;
+            let nivelDePrueba = 0;
+
+            while(!nivelEncontrado){
+                let hayColisionEnEsteNivel = false;
+
+                // Comparamos el cuerpo 'i' contra todos los ANTERIORES que ya ubicamos
+                for(var j = 0; j < i; j++){
+                    let objComparar = xBodies.children[j];
+
+                    // Si están en el mismo nivel, verificamos si chocan por grados
+                    if(objComparar.pos === nivelDePrueba){
+                        if(hayAlgoAhi(aGdecs[i], aGdecs[j])){
+                            hayColisionEnEsteNivel = true;
+                            break; // Salimos del bucle 'j', ya sabemos que este nivel no sirve
+                        }
                     }
                 }
-            }
-        }
-        //zpn.log('aBodiesPos: '+aBodiesPos.join('\n'))
-        for(i=0;i<aGdecs.length;i++){
-            let objAs=xBodies.children[i]//getAs(i)
-            objAs.pos=aBodiesPos[i]-1
-        }
-        for(i=1;i<aGdecs.length;i++){
-            let objAs=xBodies.children[i]//getAs(i)
-            for(i2=0;i2<aGdecs.length;i2++){
-                let objAs2=xBodies.children[i2]//getAs(i2)
-                //objAs.pos=aBodiesPos[i]-1
-                let haa=hayAlgoAhi(aGdecs[i], aGdecs[i2])
-                if(haa && i!==i2 && objAs.pos === objAs2.pos){
-                    objAs.pos++
+
+                if(!hayColisionEnEsteNivel){
+                    objActual.pos = nivelDePrueba;
+                    nivelEncontrado = true;
+                } else {
+                    nivelDePrueba++; // Probamos un nivel más hacia el centro
                 }
             }
-            if(objAs.pos>maxPos){
-                maxPos=objAs.pos
-            }
+
+            if(nivelDePrueba > maxPos) maxPos = nivelDePrueba;
         }
-        for(i=0;i<aGdecs.length;i++){
-            objAs=xBodies.children[i]//getAs(i)
-            if(objAs.pos+1>maxPos){
-                maxPos++
-            }
-        }
-        //maxPos++
-        //zpn.log('maxPos: '+maxPos)
+
+        //setAspsCircleWidth()
+        // 3. Informamos el máximo nivel alcanzado para ajustar el mapa
         if(!r.isBack){
-            zoolMap.posMaxInt=maxPos
-            //zm.currentMinPlanetsWidth=zm.objAI.width-(zm.planetSizeInt*zm.posMaxInt*2)-zm.objSignsCircle.w*2-zm.planetSizeInt
-            //zm.setAreasWidth(true)
-        }else{
-            zoolMap.posMaxExt=maxPos
-            //zm.setAreasWidth(false)
+            zoolMap.posMaxInt = maxPos;
+        } else {
+            zoolMap.posMaxExt = maxPos;
         }
     }
     function hayAlgoAhi(startDegree, secondStartDegree){
-        const margen=10.00
+        const margen=15.00
         // Normalize degrees to be within the 0-360 range
         const normalize = (deg) => ((deg % 360) + 360) % 360;
 
@@ -145,5 +145,69 @@ Item{
         };
 
         return isOverlapping(normalizedStart, endDegree, normalizedSecondStart, secondEndDegree);
+    }
+    /*function setAspsCircleWidth(){
+        let w=zoolMap.width
+        for(var i=0;i<zoolMap.aBodies.length;i++){
+            let as=xBodies.children[i]
+            if(as.width<w){
+                w=as.width
+            }
+        }
+        zoolMap.aspCircleWidth=w
+    }
+    function setMaxPos(){
+        let maxPos=1
+        for(var i=0;i<zoolMap.aBodies.length;i++){
+            let as=xBodies.children[i]
+            if(as.pos>maxPos){
+                maxPos=as.pos
+            }
+        }
+        if(!r.isBack){
+            zoolMap.posMaxInt=maxPos
+        }else{
+            zoolMap.posMaxExt=maxPos
+        }
+    }*/
+    function setAspsCircleWidth(){
+        let w=zoolMap.zm.width//aspCircleWidth
+        let bw
+        for(var i=0;i<zoolMap.aBodies.length;i++){
+            bw=xBodies.children[i].width//zm.objBodiesCircle.getBodieWidth(i)
+            if(bw<w){
+                w=bw
+                zoolMap.aspCircleWidth=bw
+            }
+            if(zoolMap.aspCircleWidth>bw){
+                zoolMap.aspCircleWidth=bw
+            }
+        }
+        let maxPos=0
+        let num=0
+        for(var i=0;i<zoolMap.aBodies.length;i++){
+            let mp=xBodies.children[i].pos//zm.objBodiesCircle.getBodieWidth(i)
+            if(mp>maxPos){
+                maxPos=mp
+                num=i
+            }
+        }
+        bw=xBodies.children[num].width//zm.objBodiesCircle.getBodieWidth(i)
+        if(bw<w){
+            w=bw
+        }
+        zoolMap.aspCircleWidth-=((zoolMap.bodieSize*0.5)*maxPos*2)//+zoolMap.bodieSize
+        for(i=0;i<zoolMap.aBodies.length;i++){
+            bw=xBodies.children[i].width//zm.objBodiesCircle.getBodieWidth(i)
+            if(zoolMap.aspCircleWidth-zoolMap.bodieSize<bw){
+                zoolMap.aspCircleWidth=bw-zoolMap.bodieSize-1
+            }
+        }
+    }
+    function getBodie(index){
+        return xBodies.children[index]
+    }
+    function getBodieWidth(index){
+        return xBodies.children[index].width
     }
 }

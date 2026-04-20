@@ -26,7 +26,8 @@ Rectangle{
     }
     function load(j){
         for(var i=0;i<12;i++){
-            xHousess.children[i].rotation=360-(360-j.ph['h1'].gdec)-j.pc['c'+i].gdec
+            //xHouses.children[i].rotation=360-(360-j.ph['h1'].gdec)-j.pc['c'+i].gdec
+            xHouses.children[i].rotation=0-360-(j.ph['h'+parseInt(i + 1)].gdec)+j.ph['h1'].gdec
         }
     }
 }

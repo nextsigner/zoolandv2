@@ -49,7 +49,7 @@ Rectangle{
                 }
                 Text{
                     text: '<b>'+parseInt(r.ih+1)+'</b>'
-                    font.pixelSize: zoolMap.bodieSize*0.85
+                    font.pixelSize: zoolMap.bodieSize*0.7
                     color: r.cl
                     rotation: 360-r.rotation
                     horizontalAlignment: Text.AlignHCenter

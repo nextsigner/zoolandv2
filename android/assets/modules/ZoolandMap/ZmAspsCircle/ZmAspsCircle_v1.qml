@@ -9,4 +9,10 @@ Rectangle{
     border.color: 'white'
     color: 'black'
     anchors.centerIn: parent
+    MouseArea{
+        anchors.fill: parent
+        onClicked: {
+            r.width=zoolMap.aspCircleWidth
+        }
+    }
 }

@@ -16,6 +16,7 @@ Rectangle {
     //Bodies
     property int bodieSize: r.fs
     property color bodieColor: 'white'
+    property int aspCircleWidth: -1
     property int posMaxInt: 0
     property int posMaxExt: 0
 
@@ -74,6 +75,8 @@ Rectangle {
                 id: zm
                 width: parent.width*0.8
                 height: parent.height*0.8
+                x: parent.width*0.1
+                y: parent.height*0.1
                 wrz: r.wrz
             }
         }
