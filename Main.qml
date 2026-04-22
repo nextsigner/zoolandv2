@@ -526,19 +526,48 @@ ApplicationWindow {
         let cp=u.currentFolderPath()
         let s=''
         //s+='Carpeta actual: '+cp+'\n'
+
+        let folder=u.getPath(3)+'/Zool'
+        if(!u.folderExist(folder)){
+            //s+='Carpeta Zool no existe: '+folder+'\n'
+            u.mkdir(folder)
+            s+='Bienvenido!\n'
+            s+='Esta es la primera vez que se ejecuta Zool para Android es tu dispositivo.\n'
+            s+='Se ha creado el archivo de ejemplo Ricardo.\n'
+        }else{
+            //s+='Carpeta Zool existe: '+folder+'\n'
+        }
+        //s+='Carpeta de Datos: '+appDataPath+'\n'
         let appDataPath=u.getPath(4)
-        s+='Carpeta de Datos: '+appDataPath+'\n'
-        let fd=u.getFile(appDataPath+"/jsons/Ricardo.json")
-        s+='Datos: '+fd+'\n'
-        let listaAppFiles = u.getFileList(appDataPath, ["*"])
+        let filePath=appDataPath+"/jsons/Ricardo.json"
+        if(!u.fileExist(folder+'/Ricardo.json')){
+            //s+='Demo no existe!\n'
+            let fd=u.getFile(filePath)
+            //s+='Datos a grabar:'+fd+'\n'
+            //s+='En:'+folder+'/Ricardo.json\n'
+            u.setFile(folder+'/Ricardo.json', fd)
+
+
+        }else{
+            //s+='Demo existe!\n'
+        }
+        //s+='Datos: '+fd+'\n'
+        //let listaAppFiles = u.getFileList(appDataPath, ["*"])
+        let listaAppFiles = u.getFileList(folder, ["*.json"])
         s+='Lista de Archivos en Raiz: '+listaAppFiles+'\n'
+        txt.text=s
         updateFileList()
 
         apps.aspLineWidth=2
     }
     function updateFileList(){
-        let appDataPath=u.getPath(4)
-        let lista = u.getFileList(appDataPath+"/jsons", ["*.json"])
+        //let appDataPath=u.getPath(4)
+        let folder=u.getPath(3)+'/Zool'
+        if(!u.folderExist(folder)){
+            u.mkdir(folder)
+        }
+        //let lista = u.getFileList(appDataPath+"/jsons", ["*.json"])
+        let lista = u.getFileList(folder, ["*.json"])
         //txt.text=s
         let a=[]
         a.push('Seleccionar')

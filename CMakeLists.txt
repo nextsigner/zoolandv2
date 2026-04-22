@@ -62,6 +62,18 @@ target_link_libraries(appzoolandv2 PRIVATE
     Qt6::Gui
 )
 
+target_link_libraries(appzoolandv2 PRIVATE
+    Qt6::Quick
+    Qt6::Sql
+    Qt6::Core
+    Qt6::Gui
+)
+
+if(ANDROID)
+    # Esto es vital para que las APIs de Android se activen en el compilador
+    target_link_libraries(appzoolandv2 PRIVATE Qt6::Core)
+endif()
+
 # --- 6. PROPIEDADES DE ANDROID Y ASSETS ---
 if(ANDROID)
     # Vinculación necesaria para JNI y APIs nativas en Qt 6
@@ -91,3 +103,22 @@ install(TARGETS appzoolandv2
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+if(ANDROID)
+    # 1. Definimos la ruta
+    set(OPEN_SSL_LIBS_PATH "/home/ns/nsp/android_openssl/ssl_3/arm64-v8a")
+
+    # 2. Creamos una lista con las librerías
+    set(MY_SSL_LIBS
+        "${OPEN_SSL_LIBS_PATH}/libcrypto_3.so"
+        "${OPEN_SSL_LIBS_PATH}/libssl_3.so"
+    )
+
+    # 3. Aplicamos la propiedad usando la lista
+    set_target_properties(appzoolandv2 PROPERTIES
+        QT_ANDROID_EXTRA_LIBS "${MY_SSL_LIBS}"
+    )
+
+    # 4. Headers (por si los necesitas en C++)
+    target_include_directories(appzoolandv2 PRIVATE "/home/ns/nsp/android_openssl/ssl_3/include")
+endif()

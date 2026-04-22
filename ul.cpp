@@ -1,4 +1,5 @@
 #include "ul.h"
+#include <QVariant>
 
 UL::UL(QObject *parent) : QObject(parent)
 {
@@ -293,7 +294,35 @@ void UL::sqliteClose()
 
 }
 
+void UL::checkPermissions()
+{
+#ifdef Q_OS_ANDROID
+    // 1. Definimos el nombre del permiso como un string
+    QString permissionName = "android.permission.WRITE_EXTERNAL_STORAGE";
 
+    // 2. IMPORTANTE: Convertimos el string a un QVariant y luego a QPermission
+    // Esto utiliza el constructor interno de Qt que sabe interpretar strings de Android
+    QPermission storagePermission = QVariant::fromValue(permissionName).value<QPermission>();
+
+    // 3. Ahora sí, pasamos el objeto storagePermission (que es tipo QPermission)
+    auto status = qApp->checkPermission(storagePermission);
+
+    if (status == Qt::PermissionStatus::Undetermined) {
+        qDebug() << "zoolandv2: Solicitando permiso de almacenamiento...";
+        qApp->requestPermission(storagePermission, [](const QPermission &p) {
+            if (p.status() == Qt::PermissionStatus::Granted) {
+                qDebug() << "zoolandv2: Permiso concedido por el usuario.";
+            } else {
+                qWarning() << "zoolandv2: Permiso denegado.";
+            }
+        });
+    } else if (status == Qt::PermissionStatus::Granted) {
+        qDebug() << "zoolandv2: El permiso ya está concedido.";
+    } else {
+        qWarning() << "zoolandv2: El permiso fue denegado previamente.";
+    }
+#endif
+}
 bool UL::mkdir(const QString &path)
 {
     QDir dir(path);

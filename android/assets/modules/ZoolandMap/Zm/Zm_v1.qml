@@ -59,9 +59,9 @@ Rectangle{
         anchors.centerIn: parent
         Behavior on rotation{NumberAnimation{duration:500; easing.type: Easing.InOutElastic}}
         Timer{
-            running: true
+            running: app.currentJson && parent.rotation!==360-90-45-zoolMap.signCircleRot-app.currentJson.pc.c0.gdec
             repeat: true
-            interval: 1000
+            interval: 500
             onTriggered: {
                 parent.rotation=360-90-45-zoolMap.signCircleRot-app.currentJson.pc.c0.gdec
             }

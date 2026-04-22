@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     UL u;
     u.setEngine(&engine);
+    u.checkPermissions();
 
     //-->Preset App Name
     QByteArray presetFilePath="";

@@ -14,10 +14,10 @@ Rectangle {
     property int uAlt: 0 // Agregado
     property int uGmt: 0 // Valor por defecto
 
-    /*MouseArea {
+    MouseArea {
         anchors.fill: parent
         //onClicked: r.visible = false
-    }*/
+    }
 
     Column {
         id: col
@@ -149,7 +149,11 @@ Rectangle {
                         status.text = "JSON Creado con éxito."
                         //status.text+=JSON.stringify(j, null, 2)
                         let fileName=tiNom.text.replace(/ /g, '_')+'.json'
-                        let folder=u.getPath(4)+'/jsons'
+                        //let folder=u.getPath(4)+'/jsons'
+                        let folder=u.getPath(3)+'/Zool'
+                        if(!u.folderExist(folder)){
+                            u.mkdir(folder)
+                        }
                         u.setFile(folder+'/'+fileName, JSON.stringify(j, null, 2))
                         if(!u.fileExist(folder+'/'+fileName)){
                             status.text='El archivo no ha sido creado en '+folder+'/'+fileName
@@ -209,6 +213,7 @@ Rectangle {
         return json
     }
 
+    //Geonames
     function obtenerCoordenadasGeoNames(lugar) {
         if (lugar.length < 3) return;
         status.text = 'Buscando coordenadas...'
@@ -246,6 +251,75 @@ Rectangle {
         }
         xhr.open("GET", url);
         xhr.send();
+    }
+    //openstreetmap
+    function obtenerCoordenadasOpenstreetmap(lugar) {
+        return new Promise((resolve, reject) => {
+                               const xhr = new XMLHttpRequest();
+                               const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(lugar)}&format=json`;
+
+
+                               xhr.open('GET', url);
+
+                               xhr.onload = function() {
+                                   if (xhr.status >= 200 && xhr.status < 300) {
+                                       try {
+                                           //log.lv('obtenerCoordenadas('+lugar+'): '+xhr.responseText)
+                                           const respuesta = JSON.parse(xhr.responseText);
+                                           if(respuesta && respuesta.length > 0) {
+                                               tiLat.text=parseFloat(respuesta[0].lat).toFixed(2);
+                                               tiLon.text = parseFloat(respuesta[0].lon).toFixed(2);
+                                               status.text = 'Ubicación encontrada.'
+                                               /*const latitud = parseFloat(respuesta[0].lat);
+                                               const longitud = parseFloat(respuesta[0].lon);
+                                               //zpn.logTemp('Latitud: '+latitud, 10000)
+                                               //zpn.logTemp('Longitud: '+longitud, 10000)
+                                               if(!r.loadingCoords)return
+                                               r.lat=parseFloat(latitud)
+                                               r.ulat=r.lat
+                                               r.lon=parseFloat(longitud)
+                                               r.ulon=r.lon
+                                               r.loadingCoords=false
+                                               rLoadingError.visible=false*/
+                                           }else{
+                                               status.text = 'No se pudo encontrar la ubicación.'
+                                               //reject('No se encontraron coordenadas para el lugar especificado.');
+                                               //log.clear()
+                                               //zpn.logTemp('OpenStreet.ort NO se encontraron las coordenadas de geolocalización de '+tiCiudad.text+'\nBuscando con el sistema GeoNames...', 10000)
+                                               //r.loadingCoords=true
+                                               //obtenerCoordenadasGeoNames(lugar)
+                                               /*if(Qt.platform.os==='linux' && u.folderExist('/home/ns')){
+                                                   //if(Qt.platform.os==='linux'){
+                                                   searchCoordsTurbo()
+                                               }*/
+                                           }
+                                       } catch (error) {
+                                           //reject('Error al parsear la respuesta JSON.');
+                                           //log.clear()
+                                           //zpn.logTemp('Busqueda de coordenadas con OpenStreet: Hay un error de red en estos momentos. Error al solicitar las coordenadas de geolocalización de '+tiCiudad.text, 10000)
+                                           obtenerCoordenadasGeoNames(lugar)
+                                           //                                           if(Qt.platform.os==='linux' && u.folderExist('/home/ns')){
+                                           //                                               //if(Qt.platform.os==='linux'){
+                                           //                                               searchCoordsTurbo()
+                                           //                                           }
+                                       }
+                                   }else{
+                                       //reject(`Error en la petición: Código de estado ${xhr.status}`);
+                                       //log.clear()
+                                       //zpn.logTemp('Busqueda de coordenadas con OpenStreet: Hay un error de red en estos momentos. Error al solicitar las coordenadas de geolocalización de '+tiCiudad.text, 10000)
+                                       obtenerCoordenadasGeoNames(lugar)
+                                   }
+                               };
+
+                               xhr.onerror = function() {
+                                   //reject('Error de red al realizar la petición.');
+                                   //log.clear()
+                                   //zpn.logTemp('Busqueda de coordenadas con OpenStreet: Hay un error de red en estos momentos. Error al solicitar las coordenadas de geolocalización de '+tiCiudad.text, 10000)
+                                   obtenerCoordenadasGeoNames(lugar)
+                               };
+
+                               xhr.send();
+                           });
     }
     function loadForEdit(filePath){
         let fd=u.getFile(filePath)
