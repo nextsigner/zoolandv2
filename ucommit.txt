@@ -1,1 +1,1 @@
-i7: Se ajusta aspsCircle width
+i7: Se agregó el logo al ícono de la app

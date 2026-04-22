@@ -11,6 +11,7 @@ Rectangle{
     color: 'transparent'
     border.width: 1
     border.color: 'blue'
+    property bool ev: false
     property real signRot: 0
     property int wrz: 0
     property alias objBodiesCircle: zmBodiesCircle
@@ -34,7 +35,8 @@ Rectangle{
     }
     ZmAspsCircle{
         id: zmAspsCircle
-        width: zoolMap.aspCircleWidth//parent.width-(signCircle.wrz*2)-(zoolMap.bodieSize*posMaxInt*2)
+        width: zoolMap.aspCircleWidth
+        rotation: 0+90+zoolMap.signCircleRot+180
     }
     ZmBodiesCircle{
         id: zmBodiesCircle
@@ -49,9 +51,26 @@ Rectangle{
         anchors.centerIn: parent
         visible: false
     }
+    Image{
+        width: app.fs*1.5
+        height: width
+        source: 'assets:/imgs/imgs_v2/earth.png'
+        rotation: 0
+        anchors.centerIn: parent
+        Behavior on rotation{NumberAnimation{duration:500; easing.type: Easing.InOutElastic}}
+        Timer{
+            running: true
+            repeat: true
+            interval: 1000
+            onTriggered: {
+                parent.rotation=360-90-45-zoolMap.signCircleRot-app.currentJson.pc.c0.gdec
+            }
+        }
+    }
     Text{
         id: txtCentral
-        text: 'MW:'+zoolMap.aspCircleWidth
+        //text: 'MW:'+zoolMap.aspCircleWidth
+        text:  'AR: '+app.appRotated
         font.pixelSize: zoolMap.fs*2
         color: 'red'
         anchors.centerIn: parent
@@ -70,7 +89,7 @@ Rectangle{
                 let bw=parseInt(zmBodiesCircle.getBodieWidth(i))
                 if(bw<=widthMenor){
                     widthMenor=bw
-                    txtCentral.text=zoolMap.aBodies[i]+':|'+zoolMap.posMaxInt+'\n'+bw
+                    //txtCentral.text=zoolMap.aBodies[i]+':|'+zoolMap.posMaxInt+'\n'+bw
                     //currentBodieForAspsWidth=i
                     nCurrentBodieForAspsWidth=i
                 }
@@ -92,6 +111,11 @@ Rectangle{
         zoolMap.signCircleRot=signCircleRot
         zmBodiesCircle.load(j)
         zmHousesCircle.load(j)
+        let jsonAsps=zmAspsCircle.getAsps(j)
+        j.asps=jsonAsps
+        zmAspsCircle.load(j)
+        //console.log(JSON.stringify(jsonAsps, null, 2))
+        //txt.text=JSON.stringify(jsonAsps, null, 2)
     }
 
 }

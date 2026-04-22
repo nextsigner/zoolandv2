@@ -17,6 +17,7 @@ ApplicationWindow {
     title: 'ZoolAnd'
     color: 'black'
     property alias app: r
+    property bool appRotated: Screen.width>Screen.height
     //property var zoolMap
     property bool dev: false
     property int fs: Screen.width*0.05
@@ -40,8 +41,12 @@ ApplicationWindow {
     Settings{
         id: apps
         fileName: './'+r.title+'.cfg'
+        property color fontColor: 'white'
+        property color backgroundColor: 'black'
         property bool showZoolandMap: false
         property bool showAllDegreeData: false
+
+        property int aspLineWidth: 2
     }
     onModoChanged: {
         if(modo===1){
@@ -336,11 +341,11 @@ ApplicationWindow {
                     id: xZoolandMap
                     width: Screen.width
                     height: width
-                    //visible: apps.showZoolandMap
+                    visible: r.uFilePathLoaded!==''
                     ZoolandMap{
                         id: zoolMap
                         fs:r.fs
-                        visible: r.uFilePathLoaded!==''
+                        parent: app.appRotated?xApp:parent
                     }
                 }
                 Text{
@@ -356,6 +361,7 @@ ApplicationWindow {
                 Row{
                     spacing: r.fs
                     anchors.horizontalCenter: parent.horizontalCenter
+                    visible: r.uFilePathLoaded!==''
                     Button{
                         id: botEnviarIA
                         text: 'Enviar a IA'
@@ -527,6 +533,8 @@ ApplicationWindow {
         let listaAppFiles = u.getFileList(appDataPath, ["*"])
         s+='Lista de Archivos en Raiz: '+listaAppFiles+'\n'
         updateFileList()
+
+        apps.aspLineWidth=2
     }
     function updateFileList(){
         let appDataPath=u.getPath(4)
