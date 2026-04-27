@@ -7,6 +7,7 @@ import unik.Unik 1.0
 import Qt.labs.settings
 
 import ZoolandMap 1.0
+import ZmButton 1.0
 
 ApplicationWindow {
     id: r
@@ -101,32 +102,29 @@ ApplicationWindow {
                         Row{
                             spacing: r.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
-                            Button{
+                            ZmButton{
                                 text: '\uf015'
-                                width: r.fs*3
-                                font.pixelSize: r.fs
-                                font.family: fontAwosome.name
+                                fs: r.fs
+                                anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     r.modo=0
                                     let s='Inicio!'
                                     txt.text=s
                                 }
                             }
-                            Button{
+                            ZmButton{
                                 text: 'Rev. Solar'
-                                width: r.fs*6
-                                font.pixelSize: r.fs
-                                font.family: fontAwosome.name
+                                fs: r.fs
+                                anchors.verticalCenter: parent.verticalCenter
                                 visible: r.uFilePathLoaded!==''
                                 onClicked: {
                                     r.modo=1
                                 }
                             }
-                            Button{
+                            ZmButton{
                                 text: '\uf059'
-                                width: r.fs*3
-                                font.pixelSize: r.fs
-                                font.family: fontAwosome.name
+                                fs: r.fs
+                                anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     let s=getAyuda()
                                     txt.text=s
@@ -136,22 +134,49 @@ ApplicationWindow {
                         Row{
                             spacing: r.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
-                            Button{
+                            ZmButton{
+                                text: '\uf0e7'
+                                fs: r.fs
+                                anchors.verticalCenter: parent.verticalCenter
+                                onClicked: {
+                                    let s=''
+                                    let d=new Date(Date.now())
+                                    let va=d.getFullYear()
+                                    let vm=d.getMonth()+1
+                                    let vd=d.getDate()
+                                    let vh=d.getHours()
+                                    let vmin=d.getMinutes()
+                                    let jf=getSweJson(va, vm, vd, vh, vmin, 0, 0.0, 0.0, 0, 'T')
+                                    r.currentJson=jf
+                                    r.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
+                                    s +=r.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
+                                    s += getList(jf)
+                                    txt.text = s
+
+                                    //r.modo=0
+                                    //let s='Inicio!'
+                                    //txt.text=s
+                                }
+                            }
+                            ZmButton{
                                 text: 'Crear Nuevo'
-                                font.pixelSize: r.fs
+                                fs: r.fs
+                                anchors.verticalCenter: parent.verticalCenter
                                 onClicked: form.visible=true
                             }
-                            Button{
+                            ZmButton{
                                 text: 'Editar'
-                                font.pixelSize: r.fs
+                                fs: r.fs
+                                anchors.verticalCenter: parent.verticalCenter
                                 visible: r.uFilePathLoaded!==''
                                 onClicked: {
                                     form.loadForEdit(r.uFilePathLoaded)
                                 }
                             }
-                            Button{
+                            ZmButton{
                                 text: 'Eliminar'
-                                font.pixelSize: r.fs
+                                fs: r.fs
+                                anchors.verticalCenter: parent.verticalCenter
                                 visible: r.uFilePathLoaded!==''
                                 onClicked: {
                                     u.deleteFile(r.uFilePathLoaded)
@@ -345,7 +370,7 @@ ApplicationWindow {
                     ZoolandMap{
                         id: zoolMap
                         fs:r.fs
-                        parent: app.appRotated?xApp:parent
+                        parent: app.appRotated?xApp:xZoolandMap
                     }
                 }
                 Text{
@@ -361,7 +386,7 @@ ApplicationWindow {
                 Row{
                     spacing: r.fs
                     anchors.horizontalCenter: parent.horizontalCenter
-                    visible: r.uFilePathLoaded!==''
+                    visible: r.uFilePathLoaded!=='' && r.uFilePathLoaded.indexOf('Ahora ')<0
                     Button{
                         id: botEnviarIA
                         text: 'Enviar a IA'
@@ -554,11 +579,11 @@ ApplicationWindow {
         //s+='Datos: '+fd+'\n'
         //let listaAppFiles = u.getFileList(appDataPath, ["*"])
         let listaAppFiles = u.getFileList(folder, ["*.json"])
-        s+='Lista de Archivos en Raiz: '+listaAppFiles+'\n'
+        //s+='Lista de Archivos en Raiz: '+listaAppFiles+'\n'
         txt.text=s
         updateFileList()
 
-        apps.aspLineWidth=2
+        //apps.aspLineWidth=2
     }
     function updateFileList(){
         //let appDataPath=u.getPath(4)

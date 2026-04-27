@@ -9,6 +9,8 @@ Rectangle{
     color: 'transparent'
     anchors.centerIn: parent
     property int numBodie: -1
+    property int is: -1
+    property int ih: -1
     property int pos: 0
     onWidthChanged: {
         if(pos<0)return
@@ -37,6 +39,22 @@ Rectangle{
         border.color: 'white'
         rotation: 360-r.rotation
         anchors.verticalCenter: parent.verticalCenter
+        MouseArea{
+            anchors.fill: parent
+            onDoubleClicked: {
+                let j=app.currentJson
+                let gms=app.getDDToDMS(j.pc['c'+r.numBodie].gdec)
+                let is=app.getIndexSign(j.pc['c'+r.numBodie].gdec)
+                r.is=is
+                let ih=app.getHouseIndexFromArrayDegs(j.pc['c'+r.numBodie].gdec, app.getJsonPhToArray(j.ph))
+                r.ih=ih
+                zoolMap.currentIndexBodie=r.numBodie
+                zoolMap.currentIndexSign=r.is
+                zoolMap.currentIndexHouse=r.ih
+
+
+            }
+        }
         Image{
             id: img
             //anchors.fill: parent

@@ -5,7 +5,7 @@ Rectangle {
     id: r
     width: parent ? parent.width : 400
     height: width
-    color: '#333'
+    color: apps.backgroundColor
     border.width: 4
     border.color: 'yellow'
     clip: true
@@ -25,6 +25,7 @@ Rectangle {
     property color cl: 'white'
 
     //Status
+    property int currentIndexBodie: -1
     property int currentIndexSign: -1
     property int currentIndexHouse: -1
     property real signCircleRot: 0.0
@@ -104,4 +105,27 @@ Rectangle {
                      }
         }
     }
+    Rectangle{
+        id: xTxtBodieSelected
+        width: txtBodieSelected.contentWidth+app.fs*0.5
+        height: txtBodieSelected.contentHeight+app.fs*0.5
+        color: 'transparent'
+        visible: r.currentIndexBodie>-1 && r.currentIndexSign>-1 && r.currentIndexHouse>-1
+        Rectangle{
+            anchors.fill: parent
+            color: apps.backgroundColor
+            border.width: 1
+            border.color: apps.fontColor
+            radius: app.fs*0.25
+            opacity: 0.5
+        }
+        Text{
+            id: txtBodieSelected
+            text: '<b>'+r.aBodies[r.currentIndexBodie]+' '+app.aSigns[r.currentIndexSign]+' Casa '+parseInt(r.currentIndexHouse+1)+'</b>'
+            font.pixelSize: app.fs*0.75
+            color: apps.fontColor
+            anchors.centerIn: parent
+        }
+    }
+
 }
