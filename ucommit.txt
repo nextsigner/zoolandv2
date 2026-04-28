@@ -1,1 +1,1 @@
-i7: Se corrigen tamaños, anchos y bordes en la GUI
+i7: Se agrega selected a bodies ext

@@ -18,7 +18,7 @@ Rectangle {
         // El tamaño del Shape debe contener el radio + la mitad del grosor del borde
         width: parent.width
         height: parent.height
-        visible: zoolMap.currentIndexSign===r.is
+        visible: zoolMap.currentIndexSign===r.is || zoolMap.currentIndexSignExt===r.is
 
         ShapePath {
             strokeColor: r.c

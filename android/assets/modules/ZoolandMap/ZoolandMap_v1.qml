@@ -26,10 +26,18 @@ Rectangle {
     property color cl: 'white'
 
     //Status
+    property real signCircleRot: 0.0
+
     property int currentIndexBodie: -1
     property int currentIndexSign: -1
     property int currentIndexHouse: -1
-    property real signCircleRot: 0.0
+    property string currentStrDdMmSs: '°0 \'0 \'\'0'
+    property string currentStrDdMmSsExt: '°0 \'0 \'\'0'
+
+
+    property int currentIndexBodieExt: -1
+    property int currentIndexSignExt: -1
+    property int currentIndexHouseExt: -1
 
     //Astrología
     property var aBodies: ['Sol', 'Luna', 'Mercurio', 'Venus', 'Marte', 'Júpiter', 'Saturno', 'Urano', 'Neptuno', 'Plutón', 'N.Sur', 'N.Norte', 'Quirón', 'Selena', 'Lilith', 'Pholus', 'Ceres', 'Pallas', 'Juno', 'Vesta']
@@ -37,6 +45,10 @@ Rectangle {
 
 
 
+    onCurrentIndexBodieExtChanged: {
+        let t=txt.text
+        //txt.text='CurrentIndexBodieExt:'+currentIndexBodieExt+'\n'+t
+    }
 
     Flickable {
         id: flick
@@ -108,8 +120,8 @@ Rectangle {
     }
     Rectangle{
         id: xTxtBodieSelected
-        width: txtBodieSelected.contentWidth+app.fs*0.5
-        height: txtBodieSelected.contentHeight+app.fs*0.5
+        width: txtBodieSelected.contentWidth+app.fs*0.25
+        height: txtBodieSelected.contentHeight+app.fs*0.25
         color: 'transparent'
         visible: r.currentIndexBodie>-1 && r.currentIndexSign>-1 && r.currentIndexHouse>-1
         Rectangle{
@@ -118,13 +130,36 @@ Rectangle {
             border.width: 1
             border.color: apps.fontColor
             radius: app.fs*0.25
-            opacity: 0.5
+            opacity: 0.75
         }
         Text{
             id: txtBodieSelected
-            text: '<b>'+r.aBodies[r.currentIndexBodie]+' '+app.aSigns[r.currentIndexSign]+' Casa '+parseInt(r.currentIndexHouse+1)+'</b>'
-            font.pixelSize: app.fs*0.75
+            text: '<b>'+r.aBodies[r.currentIndexBodie]+' '+app.aSigns[r.currentIndexSign]+' Casa '+parseInt(r.currentIndexHouse+1)+'</b><br>'+r.currentStrDdMmSs
+            font.pixelSize: app.fs*0.5
             color: apps.fontColor
+            anchors.centerIn: parent
+        }
+    }
+    Rectangle{
+        id: xTxtBodieSelectedExt
+        width: txtBodieSelectedExt.contentWidth+app.fs*0.25
+        height: txtBodieSelected.contentHeight+app.fs*0.25
+        color: 'transparent'
+        anchors.right: parent.right
+        visible: r.currentIndexBodieExt>-1 && r.currentIndexSignExt>-1 && r.currentIndexHouseExt>-1
+        Rectangle{
+            anchors.fill: parent
+            color: 'red'//apps.backgroundColor
+            border.width: 1
+            border.color: apps.fontColor
+            radius: app.fs*0.25
+            opacity: 0.75
+        }
+        Text{
+            id: txtBodieSelectedExt
+            text: '<b>'+r.aBodies[r.currentIndexBodieExt]+' '+app.aSigns[r.currentIndexSignExt]+' Casa '+parseInt(r.currentIndexHouseExt+1)+'</b><br>'+r.currentStrDdMmSsExt
+            font.pixelSize: app.fs*0.5
+            color: 'white'//apps.fontColor
             anchors.centerIn: parent
         }
     }

@@ -7,7 +7,7 @@ Rectangle{
     property int ih: 0
     property color cl: zoolMap.cl
     SequentialAnimation on cl{
-        running: zoolMap.currentIndexHouse===r.ih
+        running: zoolMap.currentIndexHouse===r.ih || zoolMap.currentIndexHouseExt===r.ih
         loops: Animation.Infinite
         onRunningChanged: {
             if(!running)r.cl=zoolMap.cl

@@ -2,6 +2,7 @@ import QtQuick
 import ZoolandMap.ZmSignsCircle 1.0
 import ZoolandMap.ZmHousesCircle 1.0
 import ZoolandMap.ZmBodiesCircle 1.0
+import ZoolandMap.ZmBodiesCircleExt 1.0
 import ZoolandMap.ZmAspsCircle 1.0
 
 Rectangle{
@@ -15,6 +16,7 @@ Rectangle{
     property real signRot: 0
     property int wrz: 0
     property alias objBodiesCircle: zmBodiesCircle
+    property alias objBodiesCircleExt: zmBodiesCircleExt
     property alias tsaw: tsaw
 
 
@@ -26,6 +28,13 @@ Rectangle{
         width: parent.width-r.wrz
         height: parent.height
         anchors.centerIn: parent
+
+    }
+    ZmBodiesCircleExt{
+        id: zmBodiesCircleExt
+        width: parent.width+(r.wrz*2)
+        //rotation: zmAspsCircle.rotation//zmBodiesCircle.rotation//signCircle.rotation
+        visible: r.ev
     }
     ZmHousesCircle{
         id: zmHousesCircle
@@ -33,6 +42,7 @@ Rectangle{
         height: parent.height
         anchors.centerIn: parent
     }
+
     ZmAspsCircle{
         id: zmAspsCircle
         width: zoolMap.aspCircleWidth
@@ -42,6 +52,7 @@ Rectangle{
         id: zmBodiesCircle
         width: parent.width-(r.wrz*2)
     }
+
     Rectangle{
         id: centro
         width: app.fs*0.5
@@ -98,11 +109,12 @@ Rectangle{
         }
     }
     Timer{
-        running: false//true
+        running: true
         repeat: true
         interval: 3000
         onTriggered: {
             //zoolMap.aspCircleWidth=parseInt(zmBodiesCircle.getBodieWidth(zoolMap.zm.currentBodieForAspsWidth))-parseInt(zoolMap.bodieSize*0.5*(zoolMap.posMaxInt-1))-zoolMap.bodieSize*2
+            //signCircle.
         }
     }
     function load(j){

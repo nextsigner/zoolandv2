@@ -26,6 +26,7 @@ ApplicationWindow {
     property int modo: 0
     property string uFilePathLoaded: ''
     property var currentJson
+    property var currentJsonExt
 
     property var aSigns: ['Aries', 'Tauro', 'Géminis', 'Cáncer', 'Leo', 'Virgo', 'Libra', 'Escorpio', 'Sagitario', 'Capricornio', 'Acuario', 'Piscis']
     property var aSignsEnergy: ['Ariana', 'Taurina', 'Geminiana', 'Canceriana', 'Leonina', 'Virginiana', 'Libriana', 'Escorpiana', 'Sagitariana', 'Capricorniana', 'Acuariana', 'Pisciana']
@@ -138,6 +139,7 @@ ApplicationWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             ZmButton{
                                 text: '\uf0e7'
+                                width: r.fs*2
                                 fs: r.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
@@ -231,7 +233,7 @@ ApplicationWindow {
                                             let nombre = partes[partes.length - 1]
                                             return nombre.replace(/_/g, ' ').replace('.json', '')
                                         }
-                                        font.pixelSize: r.fs * 1.2
+                                        font.pixelSize: r.fs
                                         color: apps.fontColor
                                         verticalAlignment: Text.AlignVCenter
                                     }
@@ -349,6 +351,32 @@ ApplicationWindow {
                         }
                     }
                 }
+                Row{
+                    spacing: r.fs*0.5
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    ZmButton{
+                        text: '\uf0e7'
+                        width: r.fs*2
+                        fs: r.fs*1.5
+                        anchors.verticalCenter: parent.verticalCenter
+                        onClicked: {
+                            let s=''
+                            let d=new Date(Date.now())
+                            let va=d.getFullYear()
+                            let vm=d.getMonth()+1
+                            let vd=d.getDate()
+                            let vh=d.getHours()
+                            let vmin=d.getMinutes()
+                            let jf=getSweJson(va, vm, vd, vh, vmin, 0, 0.0, 0.0, 0, 'T')
+                            r.currentJsonExt=jf
+                            zoolMap.zm.objBodiesCircleExt.load(jf)
+                            //r.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
+                            //s +=r.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
+                            //s += getList(jf)
+                            //txt.text = s
+                        }
+                    }
+                }
                 Item{
                     id: xZoolandMap
                     width: xApp.width
@@ -452,12 +480,13 @@ ApplicationWindow {
                     }
                     Column{
                         id: colDev
+                        spacing: app.fs
                         anchors.centerIn: parent
                         visible: r.dev
                         Text{
                             text:'<b>Modo Desarrollador</b>'
                             font.pixelSize: r.fs*1.2
-                            color: 'white'
+                            color: apps.fontColor
                         }
                         Row{
                             ZmButton{
@@ -473,11 +502,12 @@ ApplicationWindow {
                             text: 'Probar'
                             fs: r.fs
                             onClicked: {
-                                apps.showZoolandMap=true
+                                /*apps.showZoolandMap=true
                                 let c='import QtQuick\n'
                                 c+='import ZoolandMap 1.0\n'
                                 c+='ZoolandMap{fs:'+r.fs+';}\n'
-                                app.zoolMap=Qt.createQmlObject(c, xZoolandMap, 'zoolandmap-code')
+                                app.zoolMap=Qt.createQmlObject(c, xZoolandMap, 'zoolandmap-code')*/
+                                zoolMap.zm.ev=true
                             }
                         }
                         ZmButton{
