@@ -74,12 +74,13 @@ ApplicationWindow {
     }
     Rectangle{
         id: xApp
-        width: parent.width
+        width: Screen.width*0.9//-app.fs*0.2
         height: parent.height
         color: 'transparent'
         border.width: 0
         border.color: 'blue'
         clip: true
+        anchors.centerIn: parent
         Flickable{
             anchors.fill: parent
             contentWidth: parent.width
@@ -87,13 +88,14 @@ ApplicationWindow {
             Column{
                 id: col
                 spacing: r.fs
+                width: parent.width
                 anchors.horizontalCenter: parent.horizontalCenter
                 Rectangle{
                     id: xTop
                     width: xApp.width
                     height: col0.height+r.fs*0.5
                     color: 'transparent'
-                    border.width: 1
+                    border.width: 0
                     border.color: 'white'
                     Column{
                         id: col0
@@ -104,7 +106,7 @@ ApplicationWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             ZmButton{
                                 text: '\uf015'
-                                fs: r.fs
+                                fs: r.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     r.modo=0
@@ -123,7 +125,7 @@ ApplicationWindow {
                             }
                             ZmButton{
                                 text: '\uf059'
-                                fs: r.fs
+                                fs: r.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     let s=getAyuda()
@@ -136,7 +138,7 @@ ApplicationWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             ZmButton{
                                 text: '\uf0e7'
-                                fs: r.fs
+                                fs: r.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     let s=''
@@ -202,91 +204,76 @@ ApplicationWindow {
                             }
                             ComboBox {
                                 id: cbArchivos
-                                width: xApp.width - tit1.contentWidth - r.fs*2
+                                width: xApp.width - tit1.contentWidth - r.fs * 2
                                 height: r.fs * 2
                                 currentIndex: 0
 
-                                // 1. Texto del campo principal (lo que se ve cuando está cerrado)
+                                // --- SOLUCIÓN AL BORDE ROJO ---
+                                // Sobrescribimos el fondo por defecto para eliminar el indicador de foco del sistema
+                                background: Rectangle {
+                                    color: "transparent"
+                                    border.width: 0
+                                }
+                                // ------------------------------
+
+                                // 1. Texto del campo principal (Cerrado)
                                 contentItem: Rectangle {
-                                    color: 'black'
+                                    color: apps.backgroundColor
                                     border.width: 1
-                                    border.color: 'white'
+                                    border.color: apps.fontColor
                                     clip: true
 
                                     Text {
                                         anchors.centerIn: parent
-                                        // Usamos el id del ComboBox para obtener el texto actual
-                                        text: (''+cbArchivos.displayText.split('/')[cbArchivos.displayText.split('/').length-1]).replace(/_/g, ' ').replace('.json', '')
-                                        // Ajustamos el tamaño de fuente; '100' era demasiado grande para la mayoría de pantallas
-                                        font.pixelSize: r.fs * 1.2
-                                        color: "white"
-                                        verticalAlignment: Text.AlignVCenter
-                                        //horizontalAlignment: Text.AlignHCenter
-                                        Component.onCompleted: {
-                                            /*let nom = cbArchivos.model[cbArchivos.currentIndex]
-                                        let m0 = nom.split('/')
-                                        let nom2 = m0[m0.length-1]
-                                        nom2 = nom2.replace(/_/g, ' ').replace('.json', '')
-                                        text=nom2*/
+                                        // Optimizamos el formateo de texto directamente en la propiedad
+                                        text: {
+                                            let partes = cbArchivos.displayText.split('/')
+                                            let nombre = partes[partes.length - 1]
+                                            return nombre.replace(/_/g, ' ').replace('.json', '')
                                         }
+                                        font.pixelSize: r.fs * 1.2
+                                        color: apps.fontColor
+                                        verticalAlignment: Text.AlignVCenter
                                     }
                                 }
 
                                 // 2. Elementos de la lista desplegable
                                 delegate: ItemDelegate {
+                                    id: del
                                     width: cbArchivos.width
-                                    height: cbArchivos.height // Aseguramos que el alto coincida para Android
+                                    height: cbArchivos.height
 
                                     contentItem: Text {
-                                        // Importante: modelData es la forma correcta de acceder al texto del modelo
-                                        text: modelData
-                                        color: cbArchivos.currentIndex === index ? "#00AAFF" : "white"
+                                        // Formateo directo para evitar el uso de Component.onCompleted (más eficiente)
+                                        text: {
+                                            let m0 = modelData.split('/')
+                                            return m0[m0.length - 1].replace(/_/g, ' ').replace('.json', '')
+                                        }
+                                        color: apps.fontColor
                                         font.pixelSize: r.fs
                                         elide: Text.ElideRight
                                         verticalAlignment: Text.AlignVCenter
-                                        Component.onCompleted: {
-                                            let nom = modelData
-                                            let m0 = nom.split('/')
-                                            let nom2 = m0[m0.length-1]
-                                            nom2 = nom2.replace(/_/g, ' ').replace('.json', '')
-                                            text=nom2
-                                        }
                                     }
 
                                     background: Rectangle {
-                                        color: highlighted ? "#333333" : "black"
+                                        // Usamos 'del.highlighted' para referirnos al estado del delegate actual
+                                        color: del.highlighted ? "#333333" : apps.backgroundColor
                                     }
 
                                     highlighted: cbArchivos.highlightedIndex === index
                                 }
 
-                                // 3. Tu lógica de procesamiento de JSON (se mantiene igual)
+                                // 3. Lógica de selección
                                 onCurrentIndexChanged: {
-                                    if (currentIndex <= 0 || !model) return;
+                                    if (currentIndex < 0 || !model) return;
 
-                                    let nom = model[currentIndex]
-                                    let m0 = nom.split('/')
-                                    let nom2 = m0[m0.length-1]
-                                    nom2 = nom2.replace(/_/g, ' ').replace('.json', '')
-                                    getDataFromFile(model[currentIndex], nom2)
-                                    return
+                                    let rutaCompleta = model[currentIndex]
+                                    let nombreLimpio = rutaCompleta.split('/').pop().replace(/_/g, ' ').replace('.json', '')
 
-                                    let s = '\nArchivo: ' + nom2 + '\n\n'
-                                    let fd = u.getFile(model[currentIndex])
-
-                                    try {
-                                        let j = JSON.parse(fd).params
-                                        let jf = getSweJson(j.a, j.m, j.d, j.h, j.min, j.gmt, j.lon, j.lat, j.alt, 'T')
-                                        r.currentJson=jf
-                                        s += getList(jf)
-                                        txt.text = s
-                                    } catch(e) {
-                                        console.log("Error parseando JSON: ", e)
-                                    }
+                                    // Llamada a tu función externa
+                                    getDataFromFile(rutaCompleta, nombreLimpio)
                                 }
-                            }
-
-                        }
+                            }                        }
                         Row{
                             spacing: r.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -331,13 +318,13 @@ ApplicationWindow {
                                     contentItem: Text {
                                         // Importante: modelData es la forma correcta de acceder al texto del modelo
                                         text: modelData
-                                        color: cbAniosRS.currentIndex === index ? "#00AAFF" : "white"
+                                        color: cbAniosRS.currentIndex === index ? apps.fontColor : apps.fontColor
                                         font.pixelSize: r.fs
                                         elide: Text.ElideRight
                                         verticalAlignment: Text.AlignVCenter
                                     }
                                     background: Rectangle {
-                                        color: highlighted ? "#333333" : "black"
+                                        color: highlighted ? "#333333" : apps.backgroundColor
                                     }
                                     highlighted: cbArchivos.highlightedIndex === index
                                 }
@@ -364,19 +351,22 @@ ApplicationWindow {
                 }
                 Item{
                     id: xZoolandMap
-                    width: Screen.width
+                    width: xApp.width
                     height: width
+                    anchors.horizontalCenter: parent.horizontalCenter
                     visible: r.uFilePathLoaded!==''
                     ZoolandMap{
                         id: zoolMap
+                        width: parent.width
                         fs:r.fs
                         parent: app.appRotated?xApp:xZoolandMap
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                 }
                 Text{
                     id: txt
                     text: 'Selecciona un archivo'
-                    width: Screen.width-r.fs
+                    width: parent.width-r.fs
                     font.pixelSize: r.fs
                     color: 'white'
                     wrapMode: Text.WordWrap
@@ -387,9 +377,10 @@ ApplicationWindow {
                     spacing: r.fs
                     anchors.horizontalCenter: parent.horizontalCenter
                     visible: r.uFilePathLoaded!=='' && r.uFilePathLoaded.indexOf('Ahora ')<0
-                    Button{
+                    ZmButton{
                         id: botEnviarIA
                         text: 'Enviar a IA'
+                        fs: r.fs
                         property int anioRs: 0
                         //property var j: ({})
                         onClicked: {
@@ -410,9 +401,10 @@ ApplicationWindow {
                             txtNot.text='Se envió la consulta hacia la IA'
                         }
                     }
-                    Button{
+                    ZmButton{
                         id: botCopiarIA
                         text: 'Copiar para IA'
+                        fs: r.fs
                         onClicked: {
                             if(r.modo===1){
                                 let j=r.currentJson
@@ -468,18 +460,18 @@ ApplicationWindow {
                             color: 'white'
                         }
                         Row{
-                            Button{
+                            ZmButton{
                                 text: 'Ver Json'
-                                font.pixelSize: r.fs
+                                fs: r.fs
                                 onClicked: {
                                     let fd=u.getFile(r.uFilePathLoaded)
                                     txt.text=JSON.stringify(JSON.parse(fd), null, 2)
                                 }
                             }
                         }
-                        Button{
+                        ZmButton{
                             text: 'Probar'
-                            font.pixelSize: r.fs*0.5
+                            fs: r.fs
                             onClicked: {
                                 apps.showZoolandMap=true
                                 let c='import QtQuick\n'
@@ -488,9 +480,9 @@ ApplicationWindow {
                                 app.zoolMap=Qt.createQmlObject(c, xZoolandMap, 'zoolandmap-code')
                             }
                         }
-                        Button{
+                        ZmButton{
                             text: 'Salir de Modo Desarrollador'
-                            font.pixelSize: r.fs*0.5
+                            fs: r.fs
                             onClicked: {
                                 r.dev=false
                             }

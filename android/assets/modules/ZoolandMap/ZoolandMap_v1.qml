@@ -6,9 +6,10 @@ Rectangle {
     width: parent ? parent.width : 400
     height: width
     color: apps.backgroundColor
-    border.width: 4
-    border.color: 'yellow'
+    border.width: 1
+    border.color: apps.fontColor
     clip: true
+    anchors.horizontalCenter: parent.horizontalCenter
     property alias zm: zm
     property int fs: 50
     property int wrz: r.fs
