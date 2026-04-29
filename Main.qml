@@ -6,7 +6,7 @@ import swe 1.0
 import unik.Unik 1.0
 import Qt.labs.settings
 
-import ZoolandMap 1.0
+import ZoolandMap 3.0
 import ZmButton 1.0
 
 ApplicationWindow {
@@ -302,7 +302,8 @@ ApplicationWindow {
                                     Text {
                                         anchors.centerIn: parent
                                         // Usamos el id del ComboBox para obtener el texto actual
-                                        text: cbAniosRS.model[cbAniosRS.currentIndex]
+                                        //text: cbAniosRS.currentIndex>=0?cbAniosRS.model[cbAniosRS.currentIndex]:'Seleccione'
+                                        text: cbAniosRS.currentIndex >= 0 ? cbAniosRS.displayText : 'Seleccione'
                                         // Ajustamos el tamaño de fuente; '100' era demasiado grande para la mayoría de pantallas
                                         font.pixelSize: r.fs * 1.2
                                         color: "white"
@@ -328,7 +329,8 @@ ApplicationWindow {
                                     background: Rectangle {
                                         color: highlighted ? "#333333" : apps.backgroundColor
                                     }
-                                    highlighted: cbArchivos.highlightedIndex === index
+                                    //highlighted: cbArchivos.highlightedIndex === index
+                                    highlighted: cbAniosRS.highlightedIndex === index
                                 }
 
                                 // 3. Tu lógica de procesamiento de JSON (se mantiene igual)
@@ -634,7 +636,8 @@ ApplicationWindow {
             swe.setSwePath(u.getPath(1)+'\\swe')
         }
         let jNN={}
-        let j=JSON.parse(swe.getHousesPos(a, m, d, h, min, gmt, lon, lat, alt, hsys))
+        //let j=JSON.parse(swe.getHousesPos(a, m, d, h, min, gmt, lon, lat, alt, hsys))
+        let j=JSON.parse(swe.getHousesPos(a, m, d, h, min, gmt, lon, lat, alt))
         //j.ph=
         j.pc={}
         let aHousesPos=getJsonPhToArray(j.ph)

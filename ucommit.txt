@@ -1,1 +1,1 @@
-i7: Se agrega selected a bodies ext
+i7: Se crea ZoolandMap v3

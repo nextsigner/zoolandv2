@@ -70,7 +70,7 @@ Rectangle{
         anchors.centerIn: parent
         Behavior on rotation{NumberAnimation{duration:500; easing.type: Easing.InOutElastic}}
         Timer{
-            running: app.currentJson && parent.rotation!==360-90-45-zoolMap.signCircleRot-app.currentJson.pc.c0.gdec
+            running: app.currentJson && app.currentJson.pc && parent.rotation!==360-90-45-zoolMap.signCircleRot-app.currentJson.pc.c0.gdec
             repeat: true
             interval: 500
             onTriggered: {
