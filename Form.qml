@@ -150,7 +150,7 @@ Rectangle {
                         //status.text+=JSON.stringify(j, null, 2)
                         let fileName=tiNom.text.replace(/ /g, '_')+'.json'
                         //let folder=u.getPath(4)+'/jsons'
-                        let folder=u.getPath(3)+'/Zool'
+                        let folder=app.currentFilesFolder//u.getPath(3)+'/Zool'
                         if(!u.folderExist(folder)){
                             u.mkdir(folder)
                         }

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import ZoolandMap.Zm 1.0
 import ZmButton 1.0
+
 Rectangle {
     id: r
     width: parent ? parent.width : 400
@@ -14,6 +15,7 @@ Rectangle {
     property alias zm: zm
     property int fs: 50
     property int wrz: r.fs
+    property bool zoomingOrPaning: false
 
     //Bodies
     property int bodieSize: r.fs
@@ -50,6 +52,12 @@ Rectangle {
         let t=txt.text
         //txt.text='CurrentIndexBodieExt:'+currentIndexBodieExt+'\n'+t
     }
+    Timer{
+        running: r.zoomingOrPaning
+        repeat: false
+        interval: 2500
+        onTriggered: r.zoomingOrPaning=false
+    }
 
     Flickable {
         id: flick
@@ -70,28 +78,12 @@ Rectangle {
             color: "transparent"
             transformOrigin: Item.Center
 
-            // --- TU CONTENIDO ---
-            /*Rectangle {
-                anchors.centerIn: parent
-                width: parent.width * 0.7
-                height: width
-                color: "black"
-                border.width: 1
-                border.color: 'red'
-                radius: 10
-                Text {
-                    anchors.centerIn: parent
-                    text: "Zooland Map\nQt 6.11.0"
-                    color: "white"
-                    horizontalAlignment: Text.AlignHCenter
-                }
-            }*/
             Zm{
                 id: zm
-                width: parent.width*0.8
-                height: parent.height*0.8
-                x: parent.width*0.1
-                y: parent.height*0.1
+                width: parent.width*0.6
+                height: parent.height*0.6
+                x: parent.width*0.2
+                y: parent.height*0.2
                 wrz: r.wrz
             }
         }
@@ -100,9 +92,12 @@ Rectangle {
             id: pinchHandler
             target: container
             minimumScale: 0.5
-            maximumScale: 8.0
+            maximumScale: 12.0
             minimumRotation: 0
             maximumRotation: 0
+            onScaleChanged: {
+                r.zoomingOrPaning=true
+            }
         }
 
         WheelHandler {

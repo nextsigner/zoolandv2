@@ -65,7 +65,10 @@ Rectangle{
         border.color: 'white'
         rotation: 360-r.rotation
         anchors.verticalCenter: parent.verticalCenter
+        opacity: zoolMap.zoomingOrPaning?0.75:1.0
+        Behavior on opacity{NumberAnimation{duration:250}}
         MouseArea{
+            enabled: !zoolMap.zoomingOrPaning
             anchors.fill: parent
             onClicked: {
                 if(!r.isExt && zoolMap.currentIndexBodie===r.numBodie){

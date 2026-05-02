@@ -297,33 +297,89 @@ void UL::sqliteClose()
 void UL::checkPermissions()
 {
 #ifdef Q_OS_ANDROID
-    // 1. Definimos el nombre del permiso como un string
-    QString permissionName = "android.permission.WRITE_EXTERNAL_STORAGE";
+    // 1. Creamos el permiso usando un QVariant con el nombre del permiso de Android.
+    // Esto es compatible con Qt 6 y no requiere headers de Android.
+    QString permName = "android.permission.WRITE_EXTERNAL_STORAGE";
+    QPermission storagePerm = QVariant::fromValue(permName).value<QPermission>();
 
-    // 2. IMPORTANTE: Convertimos el string a un QVariant y luego a QPermission
-    // Esto utiliza el constructor interno de Qt que sabe interpretar strings de Android
-    QPermission storagePermission = QVariant::fromValue(permissionName).value<QPermission>();
-
-    // 3. Ahora sí, pasamos el objeto storagePermission (que es tipo QPermission)
-    auto status = qApp->checkPermission(storagePermission);
+    // 2. Verificamos el estado
+    auto status = qApp->checkPermission(storagePerm);
 
     if (status == Qt::PermissionStatus::Undetermined) {
-        qDebug() << "zoolandv2: Solicitando permiso de almacenamiento...";
-        qApp->requestPermission(storagePermission, [](const QPermission &p) {
+        qDebug() << "zoolandv2: Estado indeterminado, solicitando...";
+        qApp->requestPermission(storagePerm, [](const QPermission &p) {
             if (p.status() == Qt::PermissionStatus::Granted) {
-                qDebug() << "zoolandv2: Permiso concedido por el usuario.";
+                qDebug() << "zoolandv2: Permiso concedido exitosamente.";
             } else {
-                qWarning() << "zoolandv2: Permiso denegado.";
+                qWarning() << "zoolandv2: El usuario denegó el permiso.";
             }
         });
     } else if (status == Qt::PermissionStatus::Granted) {
-        qDebug() << "zoolandv2: El permiso ya está concedido.";
+        qDebug() << "zoolandv2: Permiso ya concedido previamente.";
     } else {
-        qWarning() << "zoolandv2: El permiso fue denegado previamente.";
+        qWarning() << "zoolandv2: Permiso denegado permanentemente.";
+    }
+#endif
+#ifdef Q_OS_ANDROID
+    // 1. Obtener el nombre del paquete nativo (Package Name)
+    QJniObject context = QNativeInterface::QAndroidApplication::context();
+    QString packageName = context.callObjectMethod("getPackageName", "()Ljava/lang/String;").toString();
+
+    // 2. Preparar el URI: "package:org.unikode.zool"
+    QJniObject packageUri = QJniObject::callStaticObjectMethod(
+        "android/net/Uri",
+        "parse",
+        "(Ljava/lang/String;)Landroid/net/Uri;",
+        QJniObject::fromString("package:" + packageName).object());
+
+    // 3. Crear el Intent para la configuración de "All Files Access"
+    // Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+    QJniObject intent("android/content/Intent", "(Ljava/lang/String;Landroid/net/Uri;)V",
+                      QJniObject::getStaticObjectField("android/provider/Settings",
+                                                       "ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION",
+                                                       "Ljava/lang/String;").object(),
+                      packageUri.object());
+
+    // 4. Lanzar la actividad
+    if (intent.isValid()) {
+        QNativeInterface::QAndroidApplication::runOnAndroidMainThread([intent]() {
+            QJniObject activity = QNativeInterface::QAndroidApplication::context();
+            // En Android, el context a menudo se puede usar para startActivity
+            activity.callMethod<void>("startActivity", "(Landroid/content/Intent;)V", intent.object());
+        });
+        qDebug() << "zoolandv2: Abriendo configuración de permisos de archivos...";
     }
 #endif
 }
-bool UL::mkdir(const QString &path)
+
+QString UL::getAndroidPublicDocumentsPath() {
+    // Obtenemos la ruta mediante el Environment de Android
+    // Equivale a: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+    QJniObject dirType = QJniObject::getStaticObjectField(
+        "android/os/Environment", "DIRECTORY_DOCUMENTS", "Ljava/lang/String;");
+
+    QJniObject publicDir = QJniObject::callStaticObjectMethod(
+        "android/os/Environment",
+        "getExternalStoragePublicDirectory",
+        "(Ljava/lang/String;)Ljava/io/File;",
+        dirType.object());
+
+    if (publicDir.isValid()) {
+        QString path = publicDir.callObjectMethod("getAbsolutePath", "()Ljava/lang/String;").toString();
+
+        // Creamos tu subcarpeta ZoolData
+        QDir dir(path);
+        if (!dir.exists("Zool")) {
+            dir.mkpath("Zool");
+        }
+        return dir.absoluteFilePath("Zool");
+    }
+
+    return QString(); // Error al obtener la ruta
+}
+
+
+    bool UL::mkdir(const QString &path)
 {
     QDir dir(path);
 

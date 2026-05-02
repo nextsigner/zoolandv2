@@ -32,6 +32,7 @@
 
 //Permisos
 #include <QCoreApplication>
+#include <QJniObject>
 #include <QPermission>
 //#include <QtCore/qandroidpermission.h>
 
@@ -39,6 +40,10 @@
 #include <QJniObject>      // Reemplaza a QAndroidJniObject
 #include <QJniEnvironment> // Reemplaza a QAndroidJniEnvironment
 #include <QtCore/qnativeinterface.h> // Para acceder a interfaces nativas
+// IMPORTANTE: Asegúrate de incluir este header específico de Android
+
+//#include <QtCore/qandroidpermission.h>
+
 #endif
 
 
@@ -262,6 +267,7 @@ public:
     Q_INVOKABLE bool fileExist(QByteArray fileName);
     Q_INVOKABLE QList<QString> getFileList(QByteArray folder, const QStringList types);
     Q_INVOKABLE void checkPermissions();
+    Q_INVOKABLE QString getAndroidPublicDocumentsPath();
     Q_INVOKABLE bool mkdir(const QString &path);
     Q_INVOKABLE bool isFolder(const QString &folder);
     Q_INVOKABLE QList<QString> getFolderFileList(const QByteArray folder);

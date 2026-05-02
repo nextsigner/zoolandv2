@@ -24,6 +24,7 @@ ApplicationWindow {
     property int fs: Screen.width*0.05
 
     property int modo: 0
+    property string currentFilesFolder: ''
     property string uFilePathLoaded: ''
     property var currentJson
     property var currentJsonExt
@@ -42,7 +43,7 @@ ApplicationWindow {
     Swe{id: swe}
     Settings{
         id: apps
-        fileName: './'+r.title+'.cfg'
+        fileName: './'+app.title+'.cfg'
         property color fontColor: 'white'
         property color backgroundColor: 'black'
         property bool showZoolandMap: false
@@ -52,7 +53,7 @@ ApplicationWindow {
     }
     onModoChanged: {
         if(modo===1){
-            let fd = u.getFile(r.uFilePathLoaded)
+            let fd = u.getFile(app.uFilePathLoaded)
 
             try {
                 let j = JSON.parse(fd).params
@@ -62,7 +63,7 @@ ApplicationWindow {
                 }
                 cbAniosRS.model=a
                 //let jf = getSweJson(j.a, j.m, j.d, j.h, j.min, j.gmt, j.lon, j.lat, j.alt, 'T')
-                //r.currentJson=jf
+                //app.currentJson=jf
                 s += getList(jf)
                 txt.text = s
             } catch(e) {
@@ -85,48 +86,48 @@ ApplicationWindow {
         Flickable{
             anchors.fill: parent
             contentWidth: parent.width
-            contentHeight: col.height+r.fs*10//txt.contentHeight+r.fs*3
+            contentHeight: col.height+app.fs*10//txt.contentHeight+app.fs*3
             Column{
                 id: col
-                spacing: r.fs
+                spacing: app.fs
                 width: parent.width
                 anchors.horizontalCenter: parent.horizontalCenter
                 Rectangle{
                     id: xTop
                     width: xApp.width
-                    height: col0.height+r.fs*0.5
+                    height: col0.height+app.fs*0.5
                     color: 'transparent'
                     border.width: 0
                     border.color: 'white'
                     Column{
                         id: col0
-                        spacing: r.fs//*0.25
+                        spacing: app.fs//*0.25
                         anchors.centerIn: parent
                         Row{
-                            spacing: r.fs*0.5
+                            spacing: app.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
                             ZmButton{
                                 text: '\uf015'
-                                fs: r.fs*1.5
+                                fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
-                                    r.modo=0
+                                    app.modo=0
                                     let s='Inicio!'
                                     txt.text=s
                                 }
                             }
                             ZmButton{
                                 text: 'Rev. Solar'
-                                fs: r.fs
+                                fs: app.fs
                                 anchors.verticalCenter: parent.verticalCenter
-                                visible: r.uFilePathLoaded!==''
+                                visible: app.uFilePathLoaded!==''
                                 onClicked: {
-                                    r.modo=1
+                                    app.modo=1
                                 }
                             }
                             ZmButton{
                                 text: '\uf059'
-                                fs: r.fs*1.5
+                                fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     let s=getAyuda()
@@ -135,12 +136,12 @@ ApplicationWindow {
                             }
                         }
                         Row{
-                            spacing: r.fs*0.5
+                            spacing: app.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
                             ZmButton{
                                 text: '\uf0e7'
-                                width: r.fs*2
-                                fs: r.fs*1.5
+                                width: app.fs*2
+                                fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     let s=''
@@ -151,43 +152,43 @@ ApplicationWindow {
                                     let vh=d.getHours()
                                     let vmin=d.getMinutes()
                                     let jf=getSweJson(va, vm, vd, vh, vmin, 0, 0.0, 0.0, 0, 'T')
-                                    r.currentJson=jf
-                                    r.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
-                                    s +=r.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
+                                    app.currentJson=jf
+                                    app.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
+                                    s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
                                     s += getList(jf)
                                     txt.text = s
 
-                                    //r.modo=0
+                                    //app.modo=0
                                     //let s='Inicio!'
                                     //txt.text=s
                                 }
                             }
                             ZmButton{
                                 text: 'Crear Nuevo'
-                                fs: r.fs
+                                fs: app.fs
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: form.visible=true
                             }
                             ZmButton{
                                 text: 'Editar'
-                                fs: r.fs
+                                fs: app.fs
                                 anchors.verticalCenter: parent.verticalCenter
-                                visible: r.uFilePathLoaded!==''
+                                visible: app.uFilePathLoaded!==''
                                 onClicked: {
-                                    form.loadForEdit(r.uFilePathLoaded)
+                                    form.loadForEdit(app.uFilePathLoaded)
                                 }
                             }
                             ZmButton{
                                 text: 'Eliminar'
-                                fs: r.fs
+                                fs: app.fs
                                 anchors.verticalCenter: parent.verticalCenter
-                                visible: r.uFilePathLoaded!==''
+                                visible: app.uFilePathLoaded!==''
                                 onClicked: {
-                                    u.deleteFile(r.uFilePathLoaded)
-                                    if(!u.fileExist(r.uFilePathLoaded)){
+                                    u.deleteFile(app.uFilePathLoaded)
+                                    if(!u.fileExist(app.uFilePathLoaded)){
                                         txt.text=''
                                         txtNot.text='Archivo '+cbArchivos.currentText+' eliminado.'
-                                        r.uFilePathLoaded=''
+                                        app.uFilePathLoaded=''
                                         updateFileList()
                                     }else{
                                         txtNot.text='Error al eliminar el archivo.'
@@ -196,7 +197,7 @@ ApplicationWindow {
                             }
                         }
                         Row{
-                            spacing: r.fs*0.5
+                            spacing: app.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
                             Text{
                                 id: tit1
@@ -206,8 +207,8 @@ ApplicationWindow {
                             }
                             ComboBox {
                                 id: cbArchivos
-                                width: xApp.width - tit1.contentWidth - r.fs * 2
-                                height: r.fs * 2
+                                width: xApp.width - tit1.contentWidth - app.fs * 2
+                                height: app.fs * 2
                                 currentIndex: 0
 
                                 // --- SOLUCIÓN AL BORDE ROJO ---
@@ -233,7 +234,7 @@ ApplicationWindow {
                                             let nombre = partes[partes.length - 1]
                                             return nombre.replace(/_/g, ' ').replace('.json', '')
                                         }
-                                        font.pixelSize: r.fs
+                                        font.pixelSize: app.fs
                                         color: apps.fontColor
                                         verticalAlignment: Text.AlignVCenter
                                     }
@@ -252,7 +253,7 @@ ApplicationWindow {
                                             return m0[m0.length - 1].replace(/_/g, ' ').replace('.json', '')
                                         }
                                         color: apps.fontColor
-                                        font.pixelSize: r.fs
+                                        font.pixelSize: app.fs
                                         elide: Text.ElideRight
                                         verticalAlignment: Text.AlignVCenter
                                     }
@@ -277,9 +278,9 @@ ApplicationWindow {
                                 }
                             }                        }
                         Row{
-                            spacing: r.fs*0.5
+                            spacing: app.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
-                            visible: r.modo==1
+                            visible: app.modo==1
                             Text{
                                 id: tit2
                                 text: 'Año de\nRev. Solar:'
@@ -288,8 +289,8 @@ ApplicationWindow {
                             }
                             ComboBox {
                                 id: cbAniosRS
-                                width: xApp.width - tit1.contentWidth - r.fs*2
-                                height: r.fs * 2
+                                width: xApp.width - tit1.contentWidth - app.fs*2
+                                height: app.fs * 2
                                 currentIndex: 0
 
                                 // 1. Texto del campo principal (lo que se ve cuando está cerrado)
@@ -305,7 +306,7 @@ ApplicationWindow {
                                         //text: cbAniosRS.currentIndex>=0?cbAniosRS.model[cbAniosRS.currentIndex]:'Seleccione'
                                         text: cbAniosRS.currentIndex >= 0 ? cbAniosRS.displayText : 'Seleccione'
                                         // Ajustamos el tamaño de fuente; '100' era demasiado grande para la mayoría de pantallas
-                                        font.pixelSize: r.fs * 1.2
+                                        font.pixelSize: app.fs * 1.2
                                         color: "white"
                                         verticalAlignment: Text.AlignVCenter
                                         //horizontalAlignment: Text.AlignHCenter
@@ -322,7 +323,7 @@ ApplicationWindow {
                                         // Importante: modelData es la forma correcta de acceder al texto del modelo
                                         text: modelData
                                         color: cbAniosRS.currentIndex === index ? apps.fontColor : apps.fontColor
-                                        font.pixelSize: r.fs
+                                        font.pixelSize: app.fs
                                         elide: Text.ElideRight
                                         verticalAlignment: Text.AlignVCenter
                                     }
@@ -336,7 +337,7 @@ ApplicationWindow {
                                 // 3. Tu lógica de procesamiento de JSON (se mantiene igual)
                                 onCurrentIndexChanged: {
                                     if (currentIndex <= 0 || !model) return;
-                                    let j=r.currentJson
+                                    let j=app.currentJson
                                     let a=j.params.a+currentIndex
                                     let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, a, j.params.m, j.params.d, j.params.gmt);
 
@@ -345,7 +346,7 @@ ApplicationWindow {
                                     txt.text+='\n\nAtención! Si ahora presionas el botón "Enviar a IA", la consulta se hará sobre la Revolución Solar, no sobre la lectura de la Carta Natal.\n\n'
                                     txt.text+=getList(jsRS)
                                     txt.text+='\nCarta Natal\n'
-                                    txt.text+=getList(r.currentJson)
+                                    txt.text+=getList(app.currentJson)
                                     botEnviarIA.anioRs=a
                                 }
                             }
@@ -354,12 +355,12 @@ ApplicationWindow {
                     }
                 }
                 Row{
-                    spacing: r.fs*0.5
+                    spacing: app.fs*0.5
                     anchors.horizontalCenter: parent.horizontalCenter
                     ZmButton{
                         text: '\uf0e7'
-                        width: r.fs*2
-                        fs: r.fs*1.5
+                        width: app.fs*2
+                        fs: app.fs*1.5
                         anchors.verticalCenter: parent.verticalCenter
                         onClicked: {
                             let s=''
@@ -370,10 +371,10 @@ ApplicationWindow {
                             let vh=d.getHours()
                             let vmin=d.getMinutes()
                             let jf=getSweJson(va, vm, vd, vh, vmin, 0, 0.0, 0.0, 0, 'T')
-                            r.currentJsonExt=jf
+                            app.currentJsonExt=jf
                             zoolMap.zm.objBodiesCircleExt.load(jf)
-                            //r.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
-                            //s +=r.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
+                            //app.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
+                            //s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
                             //s += getList(jf)
                             //txt.text = s
                         }
@@ -384,11 +385,11 @@ ApplicationWindow {
                     width: xApp.width
                     height: width
                     anchors.horizontalCenter: parent.horizontalCenter
-                    visible: r.uFilePathLoaded!==''
+                    visible: app.uFilePathLoaded!==''
                     ZoolandMap{
                         id: zoolMap
                         width: parent.width
-                        fs:r.fs
+                        fs:app.fs
                         parent: app.appRotated?xApp:xZoolandMap
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -396,29 +397,29 @@ ApplicationWindow {
                 Text{
                     id: txt
                     text: 'Selecciona un archivo'
-                    width: parent.width-r.fs
-                    font.pixelSize: r.fs
+                    width: parent.width-app.fs
+                    font.pixelSize: app.fs
                     color: 'white'
                     wrapMode: Text.WordWrap
                     anchors.horizontalCenter: parent.horizontalCenter
                     //anchors.centerIn: parent
                 }
                 Row{
-                    spacing: r.fs
+                    spacing: app.fs
                     anchors.horizontalCenter: parent.horizontalCenter
-                    visible: r.uFilePathLoaded!=='' && r.uFilePathLoaded.indexOf('Ahora ')<0
+                    visible: app.uFilePathLoaded!=='' && app.uFilePathLoaded.indexOf('Ahora ')<0
                     ZmButton{
                         id: botEnviarIA
                         text: 'Enviar a IA'
-                        fs: r.fs
+                        fs: app.fs
                         property int anioRs: 0
                         //property var j: ({})
                         onClicked: {
                             //txtNot.text='Texto copiado.'
                             //clipboard.setText(getIACons())
                             let textoAEnviar = ''
-                            if(r.modo===1){
-                                let j=r.currentJson
+                            if(app.modo===1){
+                                let j=app.currentJson
                                 let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, botEnviarIA.anioRs, j.params.m, j.params.d, j.params.gmt);
 
                                 let jsRS=getSweJson(arrayRetornoSolar[0], arrayRetornoSolar[1], arrayRetornoSolar[2], arrayRetornoSolar[3], arrayRetornoSolar[4], j.params.gmt, j.params.lon, j.params.lat, j.params.alt, j.params.hsys)
@@ -434,10 +435,10 @@ ApplicationWindow {
                     ZmButton{
                         id: botCopiarIA
                         text: 'Copiar para IA'
-                        fs: r.fs
+                        fs: app.fs
                         onClicked: {
-                            if(r.modo===1){
-                                let j=r.currentJson
+                            if(app.modo===1){
+                                let j=app.currentJson
                                 let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, botEnviarIA.anioRs, j.params.m, j.params.d, j.params.gmt);
 
                                 let jsRS=getSweJson(arrayRetornoSolar[0], arrayRetornoSolar[1], arrayRetornoSolar[2], arrayRetornoSolar[3], arrayRetornoSolar[4], j.params.gmt, j.params.lon, j.params.lat, j.params.alt, j.params.hsys)
@@ -453,8 +454,8 @@ ApplicationWindow {
                     }
                 }
                 Rectangle{
-                    width: r.width
-                    height: r.fs*8
+                    width: app.width
+                    height: app.fs*8
                     color: 'transparent'
                     Rectangle{
                         id: fondoToque
@@ -472,11 +473,11 @@ ApplicationWindow {
                             toques++
                             fondoToque.opacity=1.0
                             if(toques>=3){
-                                r.dev=true
+                                app.dev=true
                                 toques=-1
                             }
                             if(toques===0){
-                                r.dev=false
+                                app.dev=false
                             }
                         }
                     }
@@ -484,39 +485,49 @@ ApplicationWindow {
                         id: colDev
                         spacing: app.fs
                         anchors.centerIn: parent
-                        visible: r.dev
+                        visible: app.dev
                         Text{
                             text:'<b>Modo Desarrollador</b>'
-                            font.pixelSize: r.fs*1.2
+                            font.pixelSize: app.fs*1.2
                             color: apps.fontColor
                         }
                         Row{
                             ZmButton{
                                 text: 'Ver Json'
-                                fs: r.fs
+                                fs: app.fs
                                 onClicked: {
-                                    let fd=u.getFile(r.uFilePathLoaded)
+                                    let fd=u.getFile(app.uFilePathLoaded)
                                     txt.text=JSON.stringify(JSON.parse(fd), null, 2)
                                 }
                             }
                         }
                         ZmButton{
                             text: 'Probar'
-                            fs: r.fs
+                            fs: app.fs
                             onClicked: {
                                 /*apps.showZoolandMap=true
                                 let c='import QtQuick\n'
                                 c+='import ZoolandMap 1.0\n'
-                                c+='ZoolandMap{fs:'+r.fs+';}\n'
+                                c+='ZoolandMap{fs:'+app.fs+';}\n'
                                 app.zoolMap=Qt.createQmlObject(c, xZoolandMap, 'zoolandmap-code')*/
-                                zoolMap.zm.ev=true
+                                //zoolMap.zm.ev=true
+                                u.checkPermissions()
+                                //txt.text
+                            }
+                        }
+                        ZmButton{
+                            text: 'Copiar Texto'
+                            fs: app.fs
+                            onClicked: {
+                                clipboard.setText(txt.text)
+                                txtNot.text='Se copió el texto.'
                             }
                         }
                         ZmButton{
                             text: 'Salir de Modo Desarrollador'
-                            fs: r.fs
+                            fs: app.fs
                             onClicked: {
-                                r.dev=false
+                                app.dev=false
                             }
                         }
                     }
@@ -542,8 +553,8 @@ ApplicationWindow {
         Form{id: form}
         Rectangle{
             id: xNot
-            width: r.fs*10
-            height: txtNot.contentHeight+r.fs*2
+            width: app.fs*10
+            height: txtNot.contentHeight+app.fs*2
             color: 'black'
             border.width: 1
             border.color: 'white'
@@ -561,9 +572,9 @@ ApplicationWindow {
             }
             Text{
                 id: txtNot
-                font.pixelSize: r.fs
+                font.pixelSize: app.fs
                 color: 'white'
-                width: parent.width-r.fs
+                width: parent.width-app.fs
                 wrapMode: Text.WordWrap
                 anchors.centerIn: parent
             }
@@ -571,7 +582,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-
+        u.checkPermissions()
         let cp=u.currentFolderPath()
         let s=''
         //s+='Carpeta actual: '+cp+'\n'
@@ -587,7 +598,8 @@ ApplicationWindow {
             //s+='Carpeta Zool existe: '+folder+'\n'
         }
         //s+='Carpeta de Datos: '+appDataPath+'\n'
-        let appDataPath=u.getPath(4)
+        let appDataPath=u.getAndroidPublicDocumentsPath()//u.getExternalDocumentsPath('Zool')//u.getPath(4)
+        app.currentFilesFolder=appDataPath
         let filePath=appDataPath+"/jsons/Ricardo.json"
         if(!u.fileExist(folder+'/Ricardo.json')){
             //s+='Demo no existe!\n'
@@ -604,6 +616,8 @@ ApplicationWindow {
         //let listaAppFiles = u.getFileList(appDataPath, ["*"])
         let listaAppFiles = u.getFileList(folder, ["*.json"])
         //s+='Lista de Archivos en Raiz: '+listaAppFiles+'\n'
+        s+='Lista de Archivos en '+appDataPath+': '+listaAppFiles+'\n'
+
         txt.text=s
         updateFileList()
 
@@ -611,7 +625,7 @@ ApplicationWindow {
     }
     function updateFileList(){
         //let appDataPath=u.getPath(4)
-        let folder=u.getPath(3)+'/Zool'
+        let folder=app.currentFilesFolder//u.getPath(3)+'/Zool'
         if(!u.folderExist(folder)){
             u.mkdir(folder)
         }
@@ -642,9 +656,9 @@ ApplicationWindow {
         j.pc={}
         let aHousesPos=getJsonPhToArray(j.ph)
         //log.lv('aHousesPos: '+aHousesPos)
-        for(var i=0;i<r.aIndexSweBodies.length;i++){
-            let jb=JSON.parse(swe.getBodiePosJson(r.aIndexSweBodies[i], a, m, d, h, min, gmt, lon, lat, alt))
-            jb['nom']=r.aBodies[i]
+        for(var i=0;i<app.aIndexSweBodies.length;i++){
+            let jb=JSON.parse(swe.getBodiePosJson(app.aIndexSweBodies[i], a, m, d, h, min, gmt, lon, lat, alt))
+            jb['nom']=app.aBodies[i]
             jb.ih=getHouseIndexFromArrayDegs(jb.gdec-j.ph.h1.gdec, aHousesPos)
             //jb['ih']=1
             jb.dh=jb.ih
@@ -763,7 +777,7 @@ ApplicationWindow {
         if(apps.strDegreeData){
             strDegreeData+=' \''+gms.min+' \'\''+gms.sec
         }
-        s+='Ascendente (Casa 1): '+r.aSigns[is]+' '+strDegreeData+'\n'
+        s+='Ascendente (Casa 1): '+app.aSigns[is]+' '+strDegreeData+'\n'
 
         //Medio Cielo
         gms=getDDToDMS(j.ph['h10'].gdec)
@@ -773,7 +787,7 @@ ApplicationWindow {
         if(apps.strDegreeData){
             strDegreeData+=' \''+gms.min+' \'\''+gms.sec
         }
-        s+='Medio Cielo (Casa 10): '+r.aSigns[is]+' '+strDegreeData+'\n'
+        s+='Medio Cielo (Casa 10): '+app.aSigns[is]+' '+strDegreeData+'\n'
 
         //Cuerpos
         for(var i=0;i<Object.keys(j.pc).length;i++){
@@ -784,14 +798,14 @@ ApplicationWindow {
             if(apps.strDegreeData){
                 strDegreeData+=' \''+gms.min+' \'\''+gms.sec
             }
-            s+=''+r.aBodies[i]+' en '+r.aSigns[j.pc['c'+i].is]+' '+strDegreeData+' en Casa '+ih+'\n'
+            s+=''+app.aBodies[i]+' en '+app.aSigns[j.pc['c'+i].is]+' '+strDegreeData+' en Casa '+ih+'\n'
         }
         s+='\nCuspides de las Casas: \n'
         for(i=0;i<12;i++){
             gms=getDDToDMS(j.ph['h'+parseInt(i+1)].gdec)
             is=getIndexSign(j.ph['h'+parseInt(i+1)].gdec)
             rsdeg=gms.deg-(30*is)
-            s+='Casa '+parseInt(i+1)+' en '+r.aSigns[is]+' °'+rsdeg+'\n'
+            s+='Casa '+parseInt(i+1)+' en '+app.aSigns[is]+' °'+rsdeg+'\n'
         }
         s+='\n'
 
@@ -806,10 +820,10 @@ ApplicationWindow {
         try {
             let j = JSON.parse(fd).params
             let jf = getSweJson(j.a, j.m, j.d, j.h, j.min, j.gmt, j.lon, j.lat, j.alt, 'T')
-            r.currentJson=jf
+            app.currentJson=jf
             s += getList(jf)
             txt.text = s
-            r.uFilePathLoaded=filePath
+            app.uFilePathLoaded=filePath
         } catch(e) {
             txt.text="Ocurrió un error al cargar el archivo de "+nom+"! :("
         }
@@ -832,19 +846,19 @@ ApplicationWindow {
     function getIACons(){
         let s=''
         s+='Consulta Astrológica. Dime cómo se manifiesta las siguientes influencias astrológicas de una persona nacida con la siguiente carta natal. De momento solo dime sobre el sol y al final recuerdame que debo escribir siguiente o s para ir interpretando las manifestaciones de los demás cuerpos astrológicos listados. Sobre cada cuerpo debes decirme 10 manifestaciones positivas y 10 negativas. Enfócate en interpretarlo desde el siguiente punto de vista,  Psicología, Autoconocimiento, útil para el ámbito de ralación de pareja, entorno cercan, familiar, laboral y social. Lista: '
-        s+=getList(r.currentJson)+'\n'
+        s+=getList(app.currentJson)+'\n'
         s+='\nTe en cuenta si hay algún cuerpo astrológico cerca o encima de alguna de las cúspides de las casas para interpretarlo correctamente con mayor precisión.\n'
-        s+='Responde de forma puramente narrativa y con lenguaje fluido. Estoy trabajando con manos libres y escucharé tu respuesta por el auricular, así que evita por completo las listas, tablas, asteriscos o códigos. Organiza la información en párrafos continuos que sean fáciles de seguir auditivamente mientras realizo otras tareas. Debes estar atento a que yo pueda realizar consultas por medio tambien de audio por el micrófono. No cominences con la lectura hasta que yo no te haga mensión de que ya te estoy escuchando. Para avisarte te diré -te escucho-, -comineza- o algo similar.'
+        s+='Responde de forma puramente narrativa y con lenguaje fluido. Estoy trabajando con manos libres y escucharé tu respuesta por el auricular, así que evita por completo las listas, tablas, asteriscos o códigos. Organiza la información en párrafos continuos que sean fáciles de seguir auditivamente mientras realizo otras tareas. Debes estar atento a que yo pueda realizar consultas por medio tambien de audio por el micrófono. No cominences con la lectura hasta que yo no te haga mensión de que ya te estoy escuchando. Para avisarte te diré -te escucho-, -comineza- o algo similaapp.'
         return s
     }
     function getIAConsRS(a, j){
         let s=''
-        s+='Consulta Astrológica para una lectura e interpretación de una Revolución Solar. Te aportaré los datos listados de los cuerpos de la carta natal y luego los cuerpos del mapa correspondienta al año '+a+'. No interpretes la carta natal, enfócate en interpretar la revolución solar correspondiente con esta carta natal. Dime cómo se manifiesta las siguientes influencias astrológicas de una persona, ya sea en si mismo, en su vida, en su entorno, con la siguente revolucion solar. . En este contexto de interpretación de retorno solar, dime principalmente la incidencia o impacto del Ascendente, Sol y Luna, luego, si hay otros cuerpos que estén generando una mayor influencia, con la relevancia que amerita ser mencionada, menciónalo. Sobre cada factor, Ascendente, Sol, Luna y otros debes decirme 10 manifestaciones positivas y 10 negativas. Enfócate en interpretarlo desde el siguiente punto de vista,  Psicología, eventos que o contextos pueden presentarse, útil para el ámbito de ralación de pareja, entorno cercan, familiar, laboral y social.\nLista de cuerpos de la Carta Natal: '
-        s+=getList(r.currentJson)+'\n'
+        s+='Consulta Astrológica para una lectura e interpretación de una Revolución Solaapp. Te aportaré los datos listados de los cuerpos de la carta natal y luego los cuerpos del mapa correspondienta al año '+a+'. No interpretes la carta natal, enfócate en interpretar la revolución solar correspondiente con esta carta natal. Dime cómo se manifiesta las siguientes influencias astrológicas de una persona, ya sea en si mismo, en su vida, en su entorno, con la siguente revolucion solaapp. . En este contexto de interpretación de retorno solar, dime principalmente la incidencia o impacto del Ascendente, Sol y Luna, luego, si hay otros cuerpos que estén generando una mayor influencia, con la relevancia que amerita ser mencionada, menciónalo. Sobre cada factor, Ascendente, Sol, Luna y otros debes decirme 10 manifestaciones positivas y 10 negativas. Enfócate en interpretarlo desde el siguiente punto de vista,  Psicología, eventos que o contextos pueden presentarse, útil para el ámbito de ralación de pareja, entorno cercan, familiar, laboral y social.\nLista de cuerpos de la Carta Natal: '
+        s+=getList(app.currentJson)+'\n'
         s+='Lista de cuerpos de la Revolución Solar del año '+a+': '
         s+=getList(j)+'\n'
         s+='\nTe en cuenta si hay algún cuerpo astrológico cerca o encima de alguna de las cúspides de las casas para interpretarlo correctamente con mayor precisión.\n'
-        s+='Responde de forma puramente narrativa y con lenguaje fluido. Estoy trabajando con manos libres y escucharé tu respuesta por el auricular, así que evita por completo las listas, tablas, asteriscos o códigos. Organiza la información en párrafos continuos que sean fáciles de seguir auditivamente mientras realizo otras tareas. Debes estar atento a que yo pueda realizar consultas por medio tambien de audio por el micrófono. No cominences con la lectura hasta que yo no te haga mensión de que ya te estoy escuchando. Para avisarte te diré -te escucho-, -comineza- o algo similar.'
+        s+='Responde de forma puramente narrativa y con lenguaje fluido. Estoy trabajando con manos libres y escucharé tu respuesta por el auricular, así que evita por completo las listas, tablas, asteriscos o códigos. Organiza la información en párrafos continuos que sean fáciles de seguir auditivamente mientras realizo otras tareas. Debes estar atento a que yo pueda realizar consultas por medio tambien de audio por el micrófono. No cominences con la lectura hasta que yo no te haga mensión de que ya te estoy escuchando. Para avisarte te diré -te escucho-, -comineza- o algo similaapp.'
         return s
     }
 }

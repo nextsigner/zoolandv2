@@ -44,15 +44,18 @@ Rectangle{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.left
                 MouseArea{
+                    enabled: !zoolMap.zoomingOrPaning
                     anchors.fill: parent
                     onClicked: zoolMap.currentIndexHouse=r.ih
                 }
                 Text{
                     text: '<b>'+parseInt(r.ih+1)+'</b>'
-                    font.pixelSize: zoolMap.bodieSize*0.7
+                    font.pixelSize: zoolMap.bodieSize*0.55
                     color: r.cl
                     rotation: 360-r.rotation
                     horizontalAlignment: Text.AlignHCenter
+                    opacity: zoolMap.zoomingOrPaning?0.75:1.0
+                    Behavior on opacity{NumberAnimation{duration:250}}
                     anchors.centerIn: parent
                 }
             }

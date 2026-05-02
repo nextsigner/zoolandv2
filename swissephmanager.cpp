@@ -31,7 +31,7 @@ SwissEphManager::~SwissEphManager()
 
 void SwissEphManager::checkAndCopyEphemerides()
 {
-    // 1. Definimos la ruta interna donde Android sí permite leer a C (fopen)
+    // 1. Ruta interna de la App
     QString internalPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/ephe";
     QDir dir(internalPath);
 
@@ -39,34 +39,45 @@ void SwissEphManager::checkAndCopyEphemerides()
         dir.mkpath(".");
     }
 
-    // 2. Lista de archivos críticos que deben estar presentes
-    // Agrega aquí todos los que descargaste (_19, _20, etc.)
+    // 2. Lista de archivos para cubrir 1400 - 2100
+    // SEPL = Planetas, SEMO = Luna, SEAS = Asteroides principales
+    // _12: años 1200 a 1799
+    // _18: años 1800 a 2399
     QStringList filesToCopy = {
+        // Bloque 1800 - 2100 (y más allá)
         "sepl_18.se1", "semo_18.se1", "seas_18.se1",
-        "sepl_19.se1", "semo_19.se1", "seas_19.se1",
-        "sepl_20.se1", "semo_20.se1", "seas_20.se1",
+        // Bloque 1200 - 1799 (para cubrir desde 1400)
+        "sepl_12.se1", "semo_12.se1", "seas_12.se1",
+        // Archivos maestros requeridos siempre
         "fixstars.cat", "seorbel.txt"
     };
 
     foreach (const QString &fileName, filesToCopy) {
         QString destFile = internalPath + "/" + fileName;
 
-        // Solo copiamos si el archivo no existe para no gastar batería/tiempo
         if (!QFile::exists(destFile)) {
-            // Intentamos copiar desde el recurso assets de Qt
+            // En Android/Qt, los assets se acceden con el prefijo "assets:/"
+            // Asegúrate de que en tu .pro o CMakeLists los archivos se incluyan correctamente
             QString sourceFile = "assets:/ephe/" + fileName;
+
             if (QFile::copy(sourceFile, destFile)) {
-                // Muy importante: dar permisos de lectura al archivo extraído
+                // Dar permisos explicitos de lectura/escritura al dueño
                 QFile::setPermissions(destFile, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
                 qDebug() << "Copiado con éxito:" << fileName;
             } else {
-                qWarning() << "No se pudo copiar:" << fileName << "desde assets.";
+                // Si esto falla, verifica que el archivo esté en la carpeta android/assets/ephe
+                // y que esté declarado en tu sistema de construcción.
+                qWarning() << "ERROR: No se encontró en assets o no se pudo copiar:" << fileName;
             }
+        } else {
+            // Opcional: qDebug() << "Archivo ya existente:" << fileName;
         }
     }
 
-    // 3. Establecemos la ruta automáticamente para la librería
-    swe_set_ephe_path(internalPath.toUtf8().data());
+    // 3. Configurar la ruta en la librería C
+    // Convertimos a Path nativo para evitar problemas con separadores
+    swe_set_ephe_path(dir.toNativeSeparators(internalPath).toUtf8().data());
+
     qDebug() << "SwissEph Path configurado en:" << internalPath;
 }
 

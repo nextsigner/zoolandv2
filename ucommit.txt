@@ -1,1 +1,1 @@
-i7: Se crea ZoolandMap v3
+i7: Se logró otorgar permisos para Documentos Compartidos
