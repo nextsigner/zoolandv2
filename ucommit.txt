@@ -1,1 +1,1 @@
-i7: Se crea ZmDialogConfirm v1
+i7: Se compiló correctamente para Android y GNU/Linux v1.3.14

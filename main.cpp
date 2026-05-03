@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<SwissEphManager>("swe", 1, 0, "Swe");
     engine.rootContext()->setContextProperty("clipboard", &clipboard);
     engine.rootContext()->setContextProperty("AndroidShare", &androidShare);
-#ifdef Q_ANDROID
+#ifdef Q_OS_ANDROID
     engine.addImportPath("assets:/modules");
 #else
     engine.addImportPath("/home/ns/nsp/zoolandv2/android/assets/modules");

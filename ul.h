@@ -268,7 +268,7 @@ public:
     Q_INVOKABLE QList<QString> getFileList(QByteArray folder, const QStringList types);
     Q_INVOKABLE bool isStorageManagerGranted();
     Q_INVOKABLE void checkPermissions();
-#ifdef Q_ANDROID
+#ifdef Q_OS_ANDROID
     Q_INVOKABLE QString getAndroidPublicDocumentsPath();
 #endif
     Q_INVOKABLE bool mkdir(const QString &path);
