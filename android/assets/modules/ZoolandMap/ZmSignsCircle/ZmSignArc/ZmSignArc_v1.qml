@@ -65,7 +65,7 @@ Rectangle {
             Image{
                 width: parent.width*0.75
                 height: width
-                source: 'assets:/imgs/signos/'+r.is+'.svg'
+                source: Qt.platform.os==='android'?'assets:/imgs/signos/'+r.is+'.svg':'file:///home/ns/nsp/zoolandv2/android/assets/imgs/signos/'+r.is+'.svg'
                 rotation: 360-r.rotation-zoolMap.signCircleRot
                 anchors.centerIn: parent
             }

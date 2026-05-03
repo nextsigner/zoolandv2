@@ -368,6 +368,7 @@ void UL::checkPermissions()
 #endif
 }
 
+#ifdef Q_ANDROID
 QString UL::getAndroidPublicDocumentsPath() {
     // Obtenemos la ruta mediante el Environment de Android
     // Equivale a: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
@@ -393,7 +394,7 @@ QString UL::getAndroidPublicDocumentsPath() {
 
     return QString(); // Error al obtener la ruta
 }
-
+#endif
 
     bool UL::mkdir(const QString &path)
 {

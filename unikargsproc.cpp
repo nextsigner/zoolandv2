@@ -135,7 +135,7 @@ void UnikArgsProc::procCfgArgs()
 
             dc.append("{\"arg0\":\"");
             dc.append("-folder=");
-            dc.append(ws);
+            dc.append(ws.toUtf8());
 #ifndef Q_OS_ANDROID
             dc.append("/unik-tools");
 #else
@@ -166,7 +166,7 @@ void UnikArgsProc::procCfgArgs()
                 args.clear();
                 for (int i = 0; i < cantArgs; ++i) {
                     QByteArray nom="arg";
-                    nom.append(QString::number(i));
+                    nom.append(QString::number(i).toUtf8());
                     args.append(raizConf.value(nom.constData()).toString());
                 }
             }

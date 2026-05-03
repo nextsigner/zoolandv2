@@ -1,30 +1,14 @@
-# --- Configuración Específica para Android ---
-message(STATUS "Aplicando configuración de ANDROID...")
+# --- Configuración de Swiss Ephemeris para Android ---
 
-#QT+= androidextras
+# 1. Ruta de los encabezados (donde están los .h)
+INCLUDEPATH += $$PWD/libs/swisseph
 
-# Directorio de fuentes de Android (donde está el Manifest)
-set_target_properties(appzoolandv2 PROPERTIES
-    QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android"
-)
+# 2. Agregar todos los archivos fuente (.c) de la librería
+# Usamos $$files para no tener que escribir uno por uno
+SOURCES += $$files($$PWD/libs/swisseph/*.c)
 
-# Inclusión de Assets (Ephemeris y JSONs)
-file(GLOB_RECURSE ASSETS_EPHE "${CMAKE_CURRENT_SOURCE_DIR}/android/assets/ephe/*")
-file(GLOB_RECURSE ASSETS_JSONS "${CMAKE_CURRENT_SOURCE_DIR}/android/assets/jsons/*.json")
-target_sources(appzoolandv2 PRIVATE ${ASSETS_EPHE} ${ASSETS_JSONS})
+# 3. Definiciones recomendadas para Swiss Ephemeris en entornos Unix/Android
+DEFINES += USE_QUICK_SORT
 
-# Configuración de OpenSSL (Asegúrate de que estas rutas existen en tu Lubuntu)
-set(OPEN_SSL_LIBS_PATH "/home/ns/nsp/android_openssl/ssl_3/arm64-v8a")
-set(MY_SSL_LIBS
-    "${OPEN_SSL_LIBS_PATH}/libcrypto_3.so"
-    "${OPEN_SSL_LIBS_PATH}/libssl_3.so"
-)
-
-set_target_properties(appzoolandv2 PROPERTIES
-    QT_ANDROID_EXTRA_LIBS "${MY_SSL_LIBS}"
-)
-
-target_include_directories(appzoolandv2 PRIVATE "/home/ns/nsp/android_openssl/ssl_3/include")
-
-# Librerías matemáticas para Android
-target_link_libraries(appzoolandv2 PRIVATE m)
+# Opcional: Si necesitas que el compilador ignore ciertos warnings de la librería .c
+QMAKE_CFLAGS += -w
