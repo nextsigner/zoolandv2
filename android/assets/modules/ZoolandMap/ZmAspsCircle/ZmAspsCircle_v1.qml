@@ -173,7 +173,7 @@ Rectangle{
         let s='s'+sx+'-'+sy+'-'+px+'-'+py
         //let comp=Qt.createComponent("../../comps/AspShapeLine.qml")
         //let comp=Qt.createComponent("../../../modules/ZoolMap/ZmAspsCircle/AspShapeLine.qml")
-        let comp=Qt.createComponent(Qt.platform.os==='android'?"assets:/modules/ZoolandMap/ZmAspsCircle/AspShapeLine.qml":"/home/ns/zoolandv2/android/assets/modules/ZoolandMap/ZmAspsCircle/AspShapeLine.qml")
+        let comp=Qt.createComponent(Qt.platform.os==='android'?"assets:/modules/ZoolandMap/ZmAspsCircle/AspShapeLine.qml":"/home/ns/nsp/zoolandv2/android/assets/modules/ZoolandMap/ZmAspsCircle/AspShapeLine.qml")
         let obj=comp.createObject(item,{sx: sx, sy: sy, px: px, py: py, c: c, n:i, isBack: isBack})
         //        if(i<3){
         //            let objLineSen=compLineSen.createObject(item,{x: sx, y: sy, color: c, rotation: angulo})

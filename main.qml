@@ -173,7 +173,8 @@ ApplicationWindow {
                                 onClicked: form.visible=true
                             }
                             ZmButton{
-                                text: 'Editar'
+                                //text: 'Editar'
+                                text: '\uf044'
                                 fs: app.fs
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: app.uFilePathLoaded!==''
@@ -597,7 +598,15 @@ ApplicationWindow {
         //u.checkPermissions()
         if(u.folderExist('/home/ns'))app.dev=true
         let s=''
-        let appDataPath=u.getAndroidPublicDocumentsPath()//u.getExternalDocumentsPath('Zool')//u.getPath(4)
+        let appDataPath
+        if(Qt.platform.os==='android'){
+            appDataPath=u.getAndroidPublicDocumentsPath()
+        }else{
+            appDataPath=u.getPath(3)+'/Zool'
+            if(!u.folderExist(appDataPath)){
+                u.mkdir(appDataPath)
+            }
+        }
         app.currentFilesFolder=appDataPath
         let filePath=appDataPath+"/jsons/Ricardo.json"
         if(!u.fileExist(appDataPath+'/Ricardo.json')){

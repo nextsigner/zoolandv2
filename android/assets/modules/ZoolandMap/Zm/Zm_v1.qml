@@ -65,12 +65,12 @@ Rectangle{
     Image{
         width: app.fs*1.5
         height: width
-        source: 'assets:/imgs/imgs_v2/earth.png'
+        source: Qt.platform.os==='android'?'assets:/imgs/imgs_v2/earth.png':'file:///home/ns/nsp/zoolandv2/android/assets/imgs/imgs_v2/earth.png'
         rotation: 0
         anchors.centerIn: parent
         Behavior on rotation{NumberAnimation{duration:500; easing.type: Easing.InOutElastic}}
         Timer{
-            running: app.currentJson && app.currentJson.pc && parent.rotation!==360-90-45-zoolMap.signCircleRot-app.currentJson.pc.c0.gdec
+            running: app.uFilePathLoaded !=='' && app.currentJson && app.currentJson.pc && parent.rotation!==360-90-45-zoolMap.signCircleRot-app.currentJson.pc.c0.gdec
             repeat: true
             interval: 500
             onTriggered: {

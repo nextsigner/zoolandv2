@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 #ifdef Q_ANDROID
     engine.addImportPath("assets:/modules");
 #else
-    engine.addImportPath("/home/ns/zoolandv2/android/assets/modules");
+    engine.addImportPath("/home/ns/nsp/zoolandv2/android/assets/modules");
 #endif
     QObject::connect(
         &engine,
