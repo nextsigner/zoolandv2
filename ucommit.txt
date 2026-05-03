@@ -1,1 +1,1 @@
-i7: Se sube todo cuando CMakeLists.txt falla
+i7: Se elimina todo
