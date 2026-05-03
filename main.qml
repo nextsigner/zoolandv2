@@ -175,7 +175,8 @@ ApplicationWindow {
                             ZmButton{
                                 //text: 'Editar'
                                 text: '\uf044'
-                                fs: app.fs
+                                width: app.fs*2
+                                fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: app.uFilePathLoaded!==''
                                 onClicked: {
@@ -183,20 +184,20 @@ ApplicationWindow {
                                 }
                             }
                             ZmButton{
-                                text: 'Eliminar'
-                                fs: app.fs
+                                //text: 'Eliminar'
+                                text: '\uf1f8'
+                                width: app.fs*2
+                                fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: app.uFilePathLoaded!==''
                                 onClicked: {
-                                    u.deleteFile(app.uFilePathLoaded)
-                                    if(!u.fileExist(app.uFilePathLoaded)){
-                                        txt.text=''
-                                        txtNot.text='Archivo '+cbArchivos.currentText+' eliminado.'
-                                        app.uFilePathLoaded=''
-                                        updateFileList()
-                                    }else{
-                                        txtNot.text='Error al eliminar el archivo.'
-                                    }
+                                    let c='import ZmDialogConfirm 1.0\n'
+                                    c+='ZmDialogConfirm{}\n'
+                                    let obj=Qt.createQmlObject(c, xApp, 'zmDialogConfirm-code')
+                                    obj.obj=objDeleteFile
+                                    obj.tit='Confirmar Eliminación'
+                                    obj.cons='Desea eliminar el archivo\n['+app.uFilePathLoaded+']?'
+                                    obj.obj.args.push(app.uFilePathLoaded)
                                 }
                             }
                         }
@@ -591,6 +592,22 @@ ApplicationWindow {
                 wrapMode: Text.WordWrap
                 anchors.centerIn: parent
             }
+        }
+    }
+    QtObject{
+        id: objDeleteFile
+        property var args: []
+        function run(args){
+            u.deleteFile(app.uFilePathLoaded)
+            if(!u.fileExist(args[0])){
+                txt.text=''
+                txtNot.text='Archivo '+args[0]+' eliminado.'
+                app.uFilePathLoaded=''
+                updateFileList()
+            }else{
+                txtNot.text='Error al eliminar el archivo '+args[0]+'.'
+            }
+            txt.text='Eliminando: '+args[0]+'\n'
         }
     }
 
