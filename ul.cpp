@@ -293,6 +293,22 @@ void UL::sqliteClose()
     db.close();
 
 }
+bool UL::isStorageManagerGranted()
+{
+#ifdef Q_OS_ANDROID
+    // 1. Invocamos a android.os.Environment.isExternalStorageManager()
+    // Esta es la forma oficial de saber si tenemos el permiso de "Administrar todos los archivos"
+    jboolean granted = QJniObject::callStaticMethod<jboolean>(
+        "android/os/Environment",
+        "isExternalStorageManager"
+        );
+
+    return (granted == JNI_TRUE);
+#else
+    // Si no es Android (Linux/Windows), asumimos que tenemos permiso para manejar nuestros archivos
+    return true;
+#endif
+}
 
 void UL::checkPermissions()
 {

@@ -266,6 +266,7 @@ public:
     Q_INVOKABLE bool folderExist(const QString &path);
     Q_INVOKABLE bool fileExist(QByteArray fileName);
     Q_INVOKABLE QList<QString> getFileList(QByteArray folder, const QStringList types);
+    Q_INVOKABLE bool isStorageManagerGranted();
     Q_INVOKABLE void checkPermissions();
     Q_INVOKABLE QString getAndroidPublicDocumentsPath();
     Q_INVOKABLE bool mkdir(const QString &path);

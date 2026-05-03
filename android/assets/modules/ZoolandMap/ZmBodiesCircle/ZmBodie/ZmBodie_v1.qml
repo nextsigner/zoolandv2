@@ -105,13 +105,13 @@ Rectangle{
                     zoolMap.currentIndexSign=r.is
                     zoolMap.currentIndexHouse=r.ih
                     rsgdeg=parseInt(gms.deg-(30*(r.is)))
-                    zoolMap.currentStrDdMmSs='°'+rsgdeg+' \''+gms.min+'\'\''+gms.sec
+                    zoolMap.currentStrDdMmSs='°'+rsgdeg+' \''+gms.min+'\'\''+parseInt(gms.sec)
                 }else{
                     zoolMap.currentIndexBodieExt=r.numBodie
                     zoolMap.currentIndexSignExt=r.is
                     zoolMap.currentIndexHouseExt=r.ih
                     rsgdeg=parseInt(gms.deg-(30*(r.is)))
-                    zoolMap.currentStrDdMmSsExt='°'+gms.deg+' \''+gms.min+'\'\''+gms.sec
+                    zoolMap.currentStrDdMmSsExt='°'+rsgdeg+' \''+gms.min+'\'\''+parseInt(gms.sec)
                 }
             }
         }

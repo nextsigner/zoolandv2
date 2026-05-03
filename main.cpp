@@ -14,8 +14,9 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     UL u;
     u.setEngine(&engine);
-    u.checkPermissions();
-
+    if(!u.isStorageManagerGranted()){
+        u.checkPermissions();
+    }
     //-->Preset App Name
     QByteArray presetFilePath="";
     presetFilePath.append(qApp->applicationDirPath().toUtf8());

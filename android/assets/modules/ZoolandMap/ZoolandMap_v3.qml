@@ -131,7 +131,7 @@ Rectangle {
         Text{
             id: txtBodieSelected
             text: '<b>'+r.aBodies[r.currentIndexBodie]+' '+app.aSigns[r.currentIndexSign]+' Casa '+parseInt(r.currentIndexHouse+1)+'</b><br>'+r.currentStrDdMmSs
-            font.pixelSize: app.fs*0.5
+            font.pixelSize: app.appRotated?app.fs*0.5:app.fs
             color: apps.fontColor
             anchors.centerIn: parent
         }
@@ -154,13 +154,16 @@ Rectangle {
         Text{
             id: txtBodieSelectedExt
             text: '<b>'+r.aBodies[r.currentIndexBodieExt]+' '+app.aSigns[r.currentIndexSignExt]+' Casa '+parseInt(r.currentIndexHouseExt+1)+'</b><br>'+r.currentStrDdMmSsExt
-            font.pixelSize: app.fs*0.5
+            font.pixelSize: app.appRotated?app.fs*0.5:app.fs
             color: 'white'//apps.fontColor
             anchors.centerIn: parent
         }
     }
     ZmButton{
-        text: 'V'
+        //text: 'V'
+        text: '\uf07d'
+        width: app.fs*2
+        fs: app.fs*1.5
         anchors.bottom: parent.bottom
         onClicked:{
             if(zoolMap.parent===xApp){

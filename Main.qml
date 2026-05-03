@@ -164,8 +164,10 @@ ApplicationWindow {
                                 }
                             }
                             ZmButton{
-                                text: 'Crear Nuevo'
-                                fs: app.fs
+                                //text: 'Crear Nuevo'
+                                text: '\uf016'
+                                width: app.fs*2
+                                fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: form.visible=true
                             }
@@ -582,41 +584,22 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        u.checkPermissions()
-        let cp=u.currentFolderPath()
+        //u.checkPermissions()
         let s=''
-        //s+='Carpeta actual: '+cp+'\n'
-
-        let folder=u.getPath(3)+'/Zool'
-        if(!u.folderExist(folder)){
-            //s+='Carpeta Zool no existe: '+folder+'\n'
-            u.mkdir(folder)
-            s+='Bienvenido!\n'
-            s+='Esta es la primera vez que se ejecuta Zool para Android es tu dispositivo.\n'
-            s+='Se ha creado el archivo de ejemplo Ricardo.\n'
-        }else{
-            //s+='Carpeta Zool existe: '+folder+'\n'
-        }
-        //s+='Carpeta de Datos: '+appDataPath+'\n'
         let appDataPath=u.getAndroidPublicDocumentsPath()//u.getExternalDocumentsPath('Zool')//u.getPath(4)
         app.currentFilesFolder=appDataPath
         let filePath=appDataPath+"/jsons/Ricardo.json"
-        if(!u.fileExist(folder+'/Ricardo.json')){
-            //s+='Demo no existe!\n'
+        if(!u.fileExist(appDataPath+'/Ricardo.json')){
             let fd=u.getFile(filePath)
-            //s+='Datos a grabar:'+fd+'\n'
-            //s+='En:'+folder+'/Ricardo.json\n'
-            u.setFile(folder+'/Ricardo.json', fd)
+            u.setFile(appDataPath+'/Ricardo.json', fd)
 
 
         }else{
             //s+='Demo existe!\n'
         }
-        //s+='Datos: '+fd+'\n'
-        //let listaAppFiles = u.getFileList(appDataPath, ["*"])
-        let listaAppFiles = u.getFileList(folder, ["*.json"])
-        //s+='Lista de Archivos en Raiz: '+listaAppFiles+'\n'
-        s+='Lista de Archivos en '+appDataPath+': '+listaAppFiles+'\n'
+        let listaAppFiles = u.getFileList(appDataPath, ["*.json"])
+        //s+='Lista de Archivos en '+appDataPath+': '+listaAppFiles+'\n'
+        s+='\nTienes un total de '+listaAppFiles.length+' archivos.\n'
 
         txt.text=s
         updateFileList()

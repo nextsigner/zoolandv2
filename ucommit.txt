@@ -1,1 +1,1 @@
-i7: Se logró otorgar permisos para Documentos Compartidos
+i7: Se sube todo cuando falla CMakeLists.txt
