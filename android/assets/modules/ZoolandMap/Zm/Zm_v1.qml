@@ -34,7 +34,7 @@ Rectangle{
     }
     ZmHousesCircle{
         id: zmHousesCircleExt
-        width: parent.width+app.fs*8
+        width: parent.width+(zoolMap.bodieSize*zoolMap.posMaxExt)+(zoolMap.bodieSize*4)
         height: parent.height
         anchors.centerIn: parent
         isExt: true
@@ -141,6 +141,9 @@ Rectangle{
     }
     function loadHousesExt(j){
         zmHousesCircleExt.load(j)
+
+        zmHousesCircleExt.width=zmHousesCircleExt.parent.width+((zoolMap.bodieSize*zoolMap.posMaxExt)*0.5)
+        //zoolMap.posMaxExt
         //zmHousesCircleExt.rotation=90
     }
 }

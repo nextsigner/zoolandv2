@@ -532,7 +532,8 @@ ApplicationWindow {
                                 //zoolMap.zm.ev=true
                                 //u.checkPermissions()
 
-                                txt.text=app.currentJsonExt//JSON.stringify(app.currentJsonExt, null, 2)
+                                //txt.text=app.currentJsonExt//JSON.stringify(app.currentJsonExt, null, 2)
+                                txt.text='zoolMap.posMaxExt: '+zoolMap.posMaxExt
                             }
                         }
                         ZmButton{

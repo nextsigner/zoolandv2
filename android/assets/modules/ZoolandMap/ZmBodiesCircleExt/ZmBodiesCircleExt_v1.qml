@@ -90,6 +90,7 @@ Item{
         } else {
             zoolMap.posMaxExt = maxPos;
         }*/
+        zoolMap.posMaxExt = maxPos;
         zoolMap.zm.ev=true
     }
     function hayAlgoAhi(startDegree, secondStartDegree){
