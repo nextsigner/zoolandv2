@@ -21,6 +21,7 @@ Rectangle{
                 height: width
                 rotation: (360-(30*index))//+180
                 ih: index
+                isExt: r.isExt
                 anchors.centerIn: parent
             }
         }

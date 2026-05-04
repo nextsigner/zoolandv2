@@ -6,8 +6,9 @@ Rectangle{
     anchors.centerIn: parent
     property int ih: 0
     property color cl: zoolMap.cl
+    property bool isExt: false
     SequentialAnimation on cl{
-        running: zoolMap.currentIndexHouse===r.ih || zoolMap.currentIndexHouseExt===r.ih
+        running: !r.isExt?zoolMap.currentIndexHouse===r.ih:zoolMap.currentIndexHouseExt===r.ih
         loops: Animation.Infinite
         onRunningChanged: {
             if(!running)r.cl=zoolMap.cl
@@ -46,7 +47,23 @@ Rectangle{
                 MouseArea{
                     enabled: !zoolMap.zoomingOrPaning
                     anchors.fill: parent
-                    onClicked: zoolMap.currentIndexHouse=r.ih
+                    onClicked: {
+                        if(!r.isExt){
+                            if(zoolMap.currentIndexHouse===r.ih){
+                                zoolMap.currentIndexHouse=-1
+                            }else{
+                                zoolMap.currentIndexHouse=r.ih
+                            }
+                        }else{
+                            if(zoolMap.currentIndexHouseExt===r.ih){
+                                zoolMap.currentIndexHouseExt=-1
+                            }else{
+                                zoolMap.currentIndexHouseExt=r.ih
+                            }
+
+                        }
+
+                    }
                 }
                 Text{
                     text: '<b>'+parseInt(r.ih+1)+'</b>'
