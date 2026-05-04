@@ -10,7 +10,7 @@ import ZoolandMap 3.0
 import ZmButton 1.0
 
 ApplicationWindow {
-    id: r
+    id: app
     width: Qt.platform.os==='android'?Screen.width:600
     height: Qt.platform.os==='android'?Screen.height:900
     x: 0
@@ -18,13 +18,13 @@ ApplicationWindow {
     visibility: Qt.platform.os==='android'?'Maximized':'Windowed'
     title: 'ZoolAnd'
     color: 'black'
-    property alias app: r
+    //property alias app: r
     property bool appRotated: Qt.platform.os==='android'?Screen.width>Screen.height:false
     //property var zoolMap
     property bool dev: false
     property int fs: Qt.platform.os==='android'?Screen.width*0.05:app.width*0.05
 
-    property int modo: 0
+    property string modo: 'inicio'
     property string currentFilesFolder: ''
     property string uFilePathLoaded: ''
     property var currentJson
@@ -53,7 +53,7 @@ ApplicationWindow {
         property int aspLineWidth: 2
     }
     onModoChanged: {
-        if(modo===1){
+        if(modo==='rs'){
             let fd = u.getFile(app.uFilePathLoaded)
 
             try {
@@ -107,12 +107,13 @@ ApplicationWindow {
                         Row{
                             spacing: app.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
+                            //Inicio
                             ZmButton{
                                 text: '\uf015'
                                 fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
-                                    app.modo=0
+                                    app.modo='inicio'
                                     let s='Inicio!'
                                     txt.text=s
                                 }
@@ -123,7 +124,7 @@ ApplicationWindow {
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: app.uFilePathLoaded!==''
                                 onClicked: {
-                                    app.modo=1
+                                    app.modo='rs'
                                 }
                             }
                             ZmButton{
@@ -285,7 +286,7 @@ ApplicationWindow {
                         Row{
                             spacing: app.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
-                            visible: app.modo==1
+                            visible: app.modo=='rs'
                             Text{
                                 id: tit2
                                 text: 'Año de\nRev. Solar:'
@@ -294,13 +295,13 @@ ApplicationWindow {
                             }
                             ComboBox {
                                 id: cbAniosRS
-                                width: xApp.width - tit1.contentWidth - app.fs*2
+                                width: xApp.width - tit1.contentWidth - app.fs
                                 height: app.fs * 2
                                 currentIndex: 0
 
                                 // 1. Texto del campo principal (lo que se ve cuando está cerrado)
                                 contentItem: Rectangle {
-                                    color: 'black'
+                                    color: apps.backgroundColor
                                     border.width: 1
                                     border.color: 'white'
                                     clip: true
@@ -312,7 +313,7 @@ ApplicationWindow {
                                         text: cbAniosRS.currentIndex >= 0 ? cbAniosRS.displayText : 'Seleccione'
                                         // Ajustamos el tamaño de fuente; '100' era demasiado grande para la mayoría de pantallas
                                         font.pixelSize: app.fs * 1.2
-                                        color: "white"
+                                        color: apps.fontColor
                                         verticalAlignment: Text.AlignVCenter
                                         //horizontalAlignment: Text.AlignHCenter
 
@@ -334,8 +335,8 @@ ApplicationWindow {
                                     }
                                     background: Rectangle {
                                         color: highlighted ? "#333333" : apps.backgroundColor
+                                        clip: true
                                     }
-                                    //highlighted: cbArchivos.highlightedIndex === index
                                     highlighted: cbAniosRS.highlightedIndex === index
                                 }
 
@@ -347,6 +348,9 @@ ApplicationWindow {
                                     let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, a, j.params.m, j.params.d, j.params.gmt);
 
                                     let jsRS=getSweJson(arrayRetornoSolar[0], arrayRetornoSolar[1], arrayRetornoSolar[2], arrayRetornoSolar[3], arrayRetornoSolar[4], j.params.gmt, j.params.lon, j.params.lat, j.params.alt, j.params.hsys)
+                                    app.currentJsonExt=jsRS
+                                    zoolMap.zm.objBodiesCircleExt.load(jsRS)
+                                    zoolMap.zm.objHousesCircleExt.load(jsRS)
                                     txt.text='Revolución Solar del año'+a+'\n'
                                     txt.text+='\n\nAtención! Si ahora presionas el botón "Enviar a IA", la consulta se hará sobre la Revolución Solar, no sobre la lectura de la Carta Natal.\n\n'
                                     txt.text+=getList(jsRS)
@@ -362,6 +366,7 @@ ApplicationWindow {
                 Row{
                     spacing: app.fs*0.5
                     anchors.horizontalCenter: parent.horizontalCenter
+                    //Cargar Tránsitos de ahora
                     ZmButton{
                         text: '\uf0e7'
                         width: app.fs*2
@@ -423,7 +428,7 @@ ApplicationWindow {
                             //txtNot.text='Texto copiado.'
                             //clipboard.setText(getIACons())
                             let textoAEnviar = ''
-                            if(app.modo===1){
+                            if(app.modo==='rs'){
                                 let j=app.currentJson
                                 let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, botEnviarIA.anioRs, j.params.m, j.params.d, j.params.gmt);
 
@@ -442,7 +447,7 @@ ApplicationWindow {
                         text: 'Copiar para IA'
                         fs: app.fs
                         onClicked: {
-                            if(app.modo===1){
+                            if(app.modo==='rs'){
                                 let j=app.currentJson
                                 let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, botEnviarIA.anioRs, j.params.m, j.params.d, j.params.gmt);
 
@@ -525,8 +530,9 @@ ApplicationWindow {
                                 c+='ZoolandMap{fs:'+app.fs+';}\n'
                                 app.zoolMap=Qt.createQmlObject(c, xZoolandMap, 'zoolandmap-code')*/
                                 //zoolMap.zm.ev=true
-                                u.checkPermissions()
-                                //txt.text
+                                //u.checkPermissions()
+
+                                txt.text=app.currentJsonExt//JSON.stringify(app.currentJsonExt, null, 2)
                             }
                         }
                         ZmButton{

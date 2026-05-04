@@ -15,8 +15,10 @@ Rectangle{
     property bool ev: false
     property real signRot: 0
     property int wrz: 0
+    property alias objSignsCircle: signCircle
     property alias objBodiesCircle: zmBodiesCircle
     property alias objBodiesCircleExt: zmBodiesCircleExt
+    property alias objHousesCircleExt: zmHousesCircleExt
     property alias tsaw: tsaw
 
 
@@ -29,6 +31,14 @@ Rectangle{
         height: parent.height
         anchors.centerIn: parent
 
+    }
+    ZmHousesCircle{
+        id: zmHousesCircleExt
+        width: parent.width+app.fs*8
+        height: parent.height
+        anchors.centerIn: parent
+        isExt: true
+        visible: app.modo==='rs'
     }
     ZmBodiesCircleExt{
         id: zmBodiesCircleExt
@@ -129,5 +139,8 @@ Rectangle{
         //console.log(JSON.stringify(jsonAsps, null, 2))
         //txt.text=JSON.stringify(jsonAsps, null, 2)
     }
-
+    function loadHousesExt(j){
+        zmHousesCircleExt.load(j)
+        //zmHousesCircleExt.rotation=90
+    }
 }

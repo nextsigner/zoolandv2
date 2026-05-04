@@ -44,12 +44,13 @@ Rectangle{
             }
             Rectangle{
                 width: xDialog.width-app.fs*2
-                height: app.fs*1.2
+                height: txtCons.contentHeight+app.fs
                 color: apps.backgroundColor
                 border.width: 0
                 border.color: apps.fontColor
                 anchors.horizontalCenter: parent.horizontalCenter
                 Text{
+                    id: txtCons
                     text: r.cons
                     font.pixelSize: app.fs*0.75
                     width: parent.width-app.fs*0.5
@@ -75,7 +76,7 @@ Rectangle{
                         text: r.txtBotYes
                         onClicked:{
                             r.obj.run(obj.args)
-                            r.destroy(1000)
+                            r.destroy()
                         }
                     }
                 }

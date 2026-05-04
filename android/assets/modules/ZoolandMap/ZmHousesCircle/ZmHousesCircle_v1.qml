@@ -9,6 +9,7 @@ Rectangle{
     border.color: 'blue'
     radius: width*0.5
     anchors.centerIn: parent
+    property bool isExt: false
 
     Item{
         id: xHouses
@@ -27,7 +28,13 @@ Rectangle{
     function load(j){
         for(var i=0;i<12;i++){
             //xHouses.children[i].rotation=360-(360-j.ph['h1'].gdec)-j.pc['c'+i].gdec
-            xHouses.children[i].rotation=0-360-(j.ph['h'+parseInt(i + 1)].gdec)+j.ph['h1'].gdec
+            if(!r.isExt){
+                xHouses.children[i].rotation=0-360-(j.ph['h'+parseInt(i + 1)].gdec)+j.ph['h1'].gdec
+            }else{
+                xHouses.children[i].rotation=0-360-(j.ph['h'+parseInt(i + 1)].gdec)+zoolMap.zm.objSignsCircle.rotation
+                //xHouses.children[i].rotation=0-360-(j.ph['h'+parseInt(i + 1)].gdec)+j.ph['h1'].gdec+zoolMap.zm.objSignsCircle.rotation//app.currentJson.ph['h1'].gdec
+            }
+
         }
     }
 }
