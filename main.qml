@@ -234,7 +234,7 @@ ApplicationWindow {
                         visible: app.uFilePathLoaded!==''
                         onClicked: {
                             let p=app.currentJson.params
-                            let fecha=p.d+'/'+p.m+'/'+p.a
+                            let fecha=p.d+'.'+p.m+'.'+p.a
                             znc.load(fecha)
                         }
                     }
