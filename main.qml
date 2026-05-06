@@ -7,11 +7,13 @@ import unik.Unik 1.0
 import Qt.labs.settings
 
 import ZoolandMap 3.0
+import ZoolandNumCalc 1.0
 import ZmButton 1.0
+import ZmComboBox 1.0
 
 ApplicationWindow {
     id: app
-    width: Qt.platform.os==='android'?Screen.width:600
+    width: Qt.platform.os==='android'?Screen.width:400
     height: Qt.platform.os==='android'?Screen.height:900
     x: 0
     visible: true
@@ -119,15 +121,6 @@ ApplicationWindow {
                                 }
                             }
                             ZmButton{
-                                text: 'Rev. Solar'
-                                fs: app.fs
-                                anchors.verticalCenter: parent.verticalCenter
-                                visible: app.uFilePathLoaded!==''
-                                onClicked: {
-                                    app.modo='rs'
-                                }
-                            }
-                            ZmButton{
                                 text: '\uf059'
                                 fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
@@ -145,6 +138,7 @@ ApplicationWindow {
                                 width: app.fs*2
                                 fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
+                                visible: app.uFilePathLoaded===''
                                 onClicked: {
                                     let s=''
                                     let d=new Date(Date.now())
@@ -211,68 +205,11 @@ ApplicationWindow {
                                 color: 'white'
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-                            ComboBox {
+                            ZmComboBox {
                                 id: cbArchivos
                                 width: xApp.width - tit1.contentWidth - app.fs * 2
                                 height: app.fs * 2
                                 currentIndex: 0
-
-                                // --- SOLUCIÓN AL BORDE ROJO ---
-                                // Sobrescribimos el fondo por defecto para eliminar el indicador de foco del sistema
-                                background: Rectangle {
-                                    color: "transparent"
-                                    border.width: 0
-                                }
-                                // ------------------------------
-
-                                // 1. Texto del campo principal (Cerrado)
-                                contentItem: Rectangle {
-                                    color: apps.backgroundColor
-                                    border.width: 1
-                                    border.color: apps.fontColor
-                                    clip: true
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        // Optimizamos el formateo de texto directamente en la propiedad
-                                        text: {
-                                            let partes = cbArchivos.displayText.split('/')
-                                            let nombre = partes[partes.length - 1]
-                                            return nombre.replace(/_/g, ' ').replace('.json', '')
-                                        }
-                                        font.pixelSize: app.fs
-                                        color: apps.fontColor
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                }
-
-                                // 2. Elementos de la lista desplegable
-                                delegate: ItemDelegate {
-                                    id: del
-                                    width: cbArchivos.width
-                                    height: cbArchivos.height
-
-                                    contentItem: Text {
-                                        // Formateo directo para evitar el uso de Component.onCompleted (más eficiente)
-                                        text: {
-                                            let m0 = modelData.split('/')
-                                            return m0[m0.length - 1].replace(/_/g, ' ').replace('.json', '')
-                                        }
-                                        color: apps.fontColor
-                                        font.pixelSize: app.fs
-                                        elide: Text.ElideRight
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-
-                                    background: Rectangle {
-                                        // Usamos 'del.highlighted' para referirnos al estado del delegate actual
-                                        color: del.highlighted ? "#333333" : apps.backgroundColor
-                                    }
-
-                                    highlighted: cbArchivos.highlightedIndex === index
-                                }
-
-                                // 3. Lógica de selección
                                 onCurrentIndexChanged: {
                                     if (currentIndex < 0 || !model) return;
 
@@ -283,95 +220,31 @@ ApplicationWindow {
                                     getDataFromFile(rutaCompleta, nombreLimpio)
                                 }
                             }                        }
-                        Row{
-                            spacing: app.fs*0.5
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            visible: app.modo=='rs'
-                            Text{
-                                id: tit2
-                                text: 'Año de\nRev. Solar:'
-                                color: 'white'
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                            ComboBox {
-                                id: cbAniosRS
-                                width: xApp.width - tit1.contentWidth - app.fs
-                                height: app.fs * 2
-                                currentIndex: 0
-
-                                // 1. Texto del campo principal (lo que se ve cuando está cerrado)
-                                contentItem: Rectangle {
-                                    color: apps.backgroundColor
-                                    border.width: 1
-                                    border.color: 'white'
-                                    clip: true
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        // Usamos el id del ComboBox para obtener el texto actual
-                                        //text: cbAniosRS.currentIndex>=0?cbAniosRS.model[cbAniosRS.currentIndex]:'Seleccione'
-                                        text: cbAniosRS.currentIndex >= 0 ? cbAniosRS.displayText : 'Seleccione'
-                                        // Ajustamos el tamaño de fuente; '100' era demasiado grande para la mayoría de pantallas
-                                        font.pixelSize: app.fs * 1.2
-                                        color: apps.fontColor
-                                        verticalAlignment: Text.AlignVCenter
-                                        //horizontalAlignment: Text.AlignHCenter
-
-                                    }
-                                }
-
-                                // 2. Elementos de la lista desplegable
-                                delegate: ItemDelegate {
-                                    width: cbAniosRS.width
-                                    height: cbAniosRS.height // Aseguramos que el alto coincida para Android
-
-                                    contentItem: Text {
-                                        // Importante: modelData es la forma correcta de acceder al texto del modelo
-                                        text: modelData
-                                        color: cbAniosRS.currentIndex === index ? apps.fontColor : apps.fontColor
-                                        font.pixelSize: app.fs
-                                        elide: Text.ElideRight
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                    background: Rectangle {
-                                        color: highlighted ? "#333333" : apps.backgroundColor
-                                        clip: true
-                                    }
-                                    highlighted: cbAniosRS.highlightedIndex === index
-                                }
-
-                                // 3. Tu lógica de procesamiento de JSON (se mantiene igual)
-                                onCurrentIndexChanged: {
-                                    if (currentIndex <= 0 || !model) return;
-                                    let j=app.currentJson
-                                    let a=j.params.a+currentIndex
-                                    let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, a, j.params.m, j.params.d, j.params.gmt);
-
-                                    let jsRS=getSweJson(arrayRetornoSolar[0], arrayRetornoSolar[1], arrayRetornoSolar[2], arrayRetornoSolar[3], arrayRetornoSolar[4], j.params.gmt, j.params.lon, j.params.lat, j.params.alt, j.params.hsys)
-                                    app.currentJsonExt=jsRS
-                                    zoolMap.zm.objBodiesCircleExt.load(jsRS)
-                                    zoolMap.zm.objHousesCircleExt.load(jsRS)
-                                    txt.text='Revolución Solar del año'+a+'\n'
-                                    txt.text+='\n\nAtención! Si ahora presionas el botón "Enviar a IA", la consulta se hará sobre la Revolución Solar, no sobre la lectura de la Carta Natal.\n\n'
-                                    txt.text+=getList(jsRS)
-                                    txt.text+='\nCarta Natal\n'
-                                    txt.text+=getList(app.currentJson)
-                                    botEnviarIA.anioRs=a
-                                }
-                            }
-
-                        }
                     }
                 }
                 Row{
                     spacing: app.fs*0.5
                     anchors.horizontalCenter: parent.horizontalCenter
+                    //Calcular Numerología
+                    ZmButton{
+                        text: '\uf1ec'
+                        width: app.fs*2
+                        fs: app.fs*1.5
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: app.uFilePathLoaded!==''
+                        onClicked: {
+                            let p=app.currentJson.params
+                            let fecha=p.d+'/'+p.m+'/'+p.a
+                            znc.load(fecha)
+                        }
+                    }
                     //Cargar Tránsitos de ahora
                     ZmButton{
                         text: '\uf0e7'
                         width: app.fs*2
                         fs: app.fs*1.5
                         anchors.verticalCenter: parent.verticalCenter
+                        visible: app.uFilePathLoaded!==''
                         onClicked: {
                             let s=''
                             let d=new Date(Date.now())
@@ -389,6 +262,58 @@ ApplicationWindow {
                             //txt.text = s
                         }
                     }
+                    //Cargar Rev. Solar
+                    ZmButton{
+                        text: '\uf185'
+                        width: app.fs*2
+                        fs: app.fs*1.5
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: app.uFilePathLoaded!==''
+                        onClicked: {
+                            app.modo='rs'
+                        }
+                    }
+                }
+                Row{
+                    spacing: app.fs*0.5
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: app.modo=='rs'
+                    Text{
+                        id: tit2
+                        text: 'Año de\nRev. Solar:'
+                        color: 'white'
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    ZmComboBox {
+                        id: cbAniosRS
+                        width: xApp.width - tit1.contentWidth - app.fs*2
+                        height: app.fs * 2
+                        currentIndex: 0
+                        onCurrentIndexChanged: {
+                            if (currentIndex <= 0 || !model) return;
+                            let j=app.currentJson
+                            let a=j.params.a+currentIndex
+                            let arrayRetornoSolar=swe.getSolarReturn(j.pc.c0.gdec, a, j.params.m, j.params.d, j.params.gmt);
+
+                            let jsRS=getSweJson(arrayRetornoSolar[0], arrayRetornoSolar[1], arrayRetornoSolar[2], arrayRetornoSolar[3], arrayRetornoSolar[4], j.params.gmt, j.params.lon, j.params.lat, j.params.alt, j.params.hsys)
+                            app.currentJsonExt=jsRS
+                            zoolMap.zm.objBodiesCircleExt.load(jsRS)
+                            zoolMap.zm.objHousesCircleExt.load(jsRS)
+                            let s=''
+                            s+='Revolución Solar del año '+a+'\n\n'
+                            s+='Fecha de Nacimiento:\n'
+                            s+=getMom(app.currentJson)
+                            s+='Fecha de Retorno Solar:\n'
+                            s+=getMom(jsRS)
+                            //s+='\n\nAtención! Si ahora presionas el botón "Enviar a IA", la consulta se hará sobre la Revolución Solar, no sobre la lectura de la Carta Natal.\n\n'
+                            s+=getList(jsRS)
+                            s+='\nCarta Natal\n'
+                            s+=getList(app.currentJson)
+                            txt.text=s
+                            botEnviarIA.anioRs=a
+                        }
+                    }
+
                 }
                 Item{
                     id: xZoolandMap
@@ -572,6 +497,7 @@ ApplicationWindow {
             }
         }*/
         Form{id: form}
+        ZoolandNumCalc{id: znc}
         Rectangle{
             id: xNot
             width: app.fs*10
@@ -800,7 +726,6 @@ ApplicationWindow {
         //s+='cant pc: '+Object.keys(j.pc).length+'\n'
         //let ascIS=parseInt(j.asc/30)
 
-
         let strDegreeData=''
         //Ascendente
         let gms=getDDToDMS(j.ph['h1'].gdec)
@@ -810,6 +735,9 @@ ApplicationWindow {
         if(apps.strDegreeData){
             strDegreeData+=' \''+gms.min+' \'\''+gms.sec
         }
+        let p=app.currentJson.params
+        let fecha=p.d+'/'+p.m+'/'+p.a
+        s+='Sendero de Vida Numerológico: '+znc.getNums(fecha)[0]+'\n\n'
         s+='Ascendente (Casa 1): '+app.aSigns[is]+' '+strDegreeData+'\n'
 
         //Medio Cielo
@@ -854,12 +782,26 @@ ApplicationWindow {
             let j = JSON.parse(fd).params
             let jf = getSweJson(j.a, j.m, j.d, j.h, j.min, j.gmt, j.lon, j.lat, j.alt, 'T')
             app.currentJson=jf
+            if(app.modo==='cn' || jf.params.t==='vn' || jf.params.t==='cn'){
+                s+='Fecha de Nacimiento:\n'
+            }else if(app.modo==='rs'){
+                s+='Fecha de Retorno Solar:\n'
+            }else{
+                s+='Fecha :\n'
+            }
+            s += getMom(jf)+'\n'
             s += getList(jf)
             txt.text = s
             app.uFilePathLoaded=filePath
         } catch(e) {
             txt.text="Ocurrió un error al cargar el archivo de "+nom+"! :("
         }
+    }
+    function getMom(j){
+        let s=''
+        s+=j.params.sd+'hs\n'
+        s+='Latitud: '+j.params.lat+' Longitud: '+j.params.lon+'\nAltitud: '+j.params.alt+' GMT: '+j.params.gmt+'\n'
+        return s
     }
     function getAyuda(){
         let s='Aplicación ZoolAnd para cálculo y creación de mapas y datos astrológicos.'+'\n\n'

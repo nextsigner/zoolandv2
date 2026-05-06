@@ -14,11 +14,11 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     property alias zm: zm
     property int fs: 50
-    property int wrz: r.fs
+    property int wrz: r.fs*0.75
     property bool zoomingOrPaning: false
 
     //Bodies
-    property int bodieSize: r.fs
+    property int bodieSize: r.fs*0.75
     property color bodieColor: 'white'
     property int aspCircleWidth: -1
     property int posMaxInt: 0
@@ -66,8 +66,10 @@ Rectangle {
         contentHeight: container.height * container.scale
         boundsBehavior: Flickable.StopAtBounds
 
-        // Si el error persiste, podemos comentar estas dos líneas
-        // para probar si el resto del zoom funciona.
+        // Desactivamos el arrastre interactivo del Flickable para que
+        // no entre en conflicto con nuestro DragHandler en Desktop
+        interactive: false
+
         ScrollBar.vertical: ScrollBar { active: true }
         ScrollBar.horizontal: ScrollBar { active: true }
 
@@ -78,12 +80,20 @@ Rectangle {
             color: "transparent"
             transformOrigin: Item.Center
 
-            Zm{
+            // --- SOLUCIÓN PARA DESKTOP ---
+            DragHandler {
+                id: dragHandler
+                target: container
+                // Al no definir acceptedModifiers, funciona con clic simple
+                onActiveChanged: if (active) r.zoomingOrPaning = true
+            }
+
+            Zm {
                 id: zm
-                width: parent.width*0.6
-                height: parent.height*0.6
-                x: parent.width*0.2
-                y: parent.height*0.2
+                width: parent.width * 0.6
+                height: parent.height * 0.6
+                x: parent.width * 0.2
+                y: parent.height * 0.2
                 wrz: r.wrz
             }
         }
@@ -93,27 +103,30 @@ Rectangle {
             target: container
             minimumScale: 0.5
             maximumScale: 12.0
-            minimumRotation: 0
-            maximumRotation: 0
             onScaleChanged: {
-                r.zoomingOrPaning=true
+                r.zoomingOrPaning = true
             }
         }
 
         WheelHandler {
             id: wheelHandler
             target: container
-            acceptedModifiers: Qt.ControlModifier
+            // Eliminamos la restricción de Qt.ControlModifier si quieres zoom libre
+            // o lo dejamos si prefieres que el zoom solo sea con Control.
+            acceptedModifiers: Qt.NoModifier
             onWheel: (event)=> {
-                         let scaleStep = 0.1
-                         let delta = event.angleDelta.y > 0 ? (1 + scaleStep) : (1 - scaleStep);
-                         let newScale = container.scale * delta;
-                         if (newScale >= 0.5 && newScale <= 8.0) {
-                             container.scale = newScale;
-                         }
-                     }
+                let scaleStep = 0.1
+                let delta = event.angleDelta.y > 0 ? (1 + scaleStep) : (1 - scaleStep);
+                let newScale = container.scale * delta;
+                if (newScale >= 0.5 && newScale <= 12.0) {
+                    container.scale = newScale;
+                }
+            }
         }
     }
+
+
+
     Rectangle{
         id: xTxtBodieSelected
         width: txtBodieSelected.contentWidth+app.fs*0.25
@@ -159,11 +172,11 @@ Rectangle {
             anchors.centerIn: parent
         }
     }
+    //Expandir Mapa
     ZmButton{
-        //text: 'V'
         text: '\uf07d'
         width: app.fs*2
-        fs: app.fs*1.5
+        fs: !app.appRotated?app.fs*1.5:app.fs*0.75
         anchors.bottom: parent.bottom
         onClicked:{
             if(zoolMap.parent===xApp){

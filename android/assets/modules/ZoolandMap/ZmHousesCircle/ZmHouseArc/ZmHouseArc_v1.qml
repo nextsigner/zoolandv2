@@ -44,6 +44,13 @@ Rectangle{
                 border.color: r.cl
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.left
+                Rectangle{
+                    color: apps.backgroundColor
+                    radius: width*0.5
+                    opacity: 0.75
+                    anchors.fill: parent
+                    z: parent.z-1
+                }
                 MouseArea{
                     enabled: !zoolMap.zoomingOrPaning
                     anchors.fill: parent

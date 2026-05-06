@@ -4,7 +4,7 @@ import QtQuick.Effects
 
 Rectangle{
     id: r
-    width: !isExt?parent.width-(zoolMap.bodieSize*pos):parent.width+(zoolMap.bodieSize*pos)+zoolMap.bodieSize*3
+    width: !isExt?parent.width-(zoolMap.bodieSize*pos):parent.width+(zoolMap.bodieSize*2*pos)+zoolMap.bodieSize*3
     height: 1//parent.width-(zoolMap.bodieSize*pos)
     color: 'transparent'
     anchors.centerIn: parent
@@ -25,7 +25,7 @@ Rectangle{
         repeat: false
         interval: 200
         onTriggered: {
-            zoolMap.aspCircleWidth=r.width-(zoolMap.bodieSize*2)
+            zoolMap.aspCircleWidth=r.width-(zoolMap.bodieSize*4)
             zoolMap.zm.tsaw.restart()
         }
 
@@ -54,10 +54,12 @@ Rectangle{
         color: r.currentColor//multiEffect1.colorization
         anchors.verticalCenter: parent.verticalCenter
         visible: r.isExt
+        anchors.left: parent.left
+        anchors.leftMargin: xBodie.width
     }
     Rectangle{
         id: xBodie
-        width: app.fs
+        width: zoolMap.bodieSize
         height: width
         radius: width*0.5
         color: 'transparent'
