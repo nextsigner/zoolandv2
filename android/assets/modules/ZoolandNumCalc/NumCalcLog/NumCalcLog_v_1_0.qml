@@ -24,7 +24,7 @@ Rectangle{
         anchors.topMargin: app.fs
         TextEdit{
             id: taLog
-            width: parent.width-app.fs//*0.5
+            width: parent.width-app.fs*3//*0.5
             wrapMode: Text.WordWrap
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: r.numPanelLogFs
@@ -38,9 +38,10 @@ Rectangle{
         anchors.top: parent.top
         anchors.topMargin: spacing
         Repeater{
-            model: ['X', 'A+', 'A-', 'C']
+            //model: ['X', 'A+', 'A-', 'C']
+            model: ['A+', 'A-', 'C']
             Rectangle{
-                width: app.fs
+                width: app.fs*1.5
                 height: width
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: apps.fontColor
@@ -111,19 +112,14 @@ Rectangle{
     }
     function run(index){
         if(index===0){
-            r.visible=false
-            r.visible=apps.showLog
-            return
-        }
-        if(index===1){
             toRight()
             return
         }
-        if(index===2){
+        if(index===1){
             toLeft()
             return
         }
-        if(index===3){
+        if(index===2){
             //Código para copiar
             clipboard.setText(taLog.text)
             showMsg('Se ha copiado el texto en el portapapeles.')

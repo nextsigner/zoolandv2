@@ -52,6 +52,10 @@ Rectangle {
         let t=txt.text
         //txt.text='CurrentIndexBodieExt:'+currentIndexBodieExt+'\n'+t
     }
+    MouseArea {
+        acceptedButtons: Qt.LeftButton
+        onDoubleClicked: r.resetView()
+    }
     Timer{
         running: r.zoomingOrPaning
         repeat: false
@@ -72,7 +76,10 @@ Rectangle {
 
         ScrollBar.vertical: ScrollBar { active: true }
         ScrollBar.horizontal: ScrollBar { active: true }
-
+        TapHandler {
+            acceptedButtons: Qt.LeftButton
+            onDoubleTapped: r.resetView()
+        }
         Rectangle {
             id: container
             width: r.width
@@ -103,6 +110,8 @@ Rectangle {
             target: container
             minimumScale: 0.5
             maximumScale: 12.0
+            minimumRotation: 0
+            maximumRotation: 0
             onScaleChanged: {
                 r.zoomingOrPaning = true
             }
@@ -172,18 +181,29 @@ Rectangle {
             anchors.centerIn: parent
         }
     }
-    //Expandir Mapa
-    ZmButton{
-        text: '\uf07d'
-        width: app.fs*2
-        fs: !app.appRotated?app.fs*1.5:app.fs*0.75
+    Row{
         anchors.bottom: parent.bottom
-        onClicked:{
-            if(zoolMap.parent===xApp){
-                zoolMap.parent=xZoolandMap
-            }else{
-                zoolMap.parent=xApp
+        //Expandir Mapa
+        ZmButton{
+            text: '\uf07d'
+            fs: !app.appRotated?app.fs*1.5:app.fs*0.75
+            isCuad: true
+            onClicked:{
+                if(zoolMap.parent===xApp){
+                    zoolMap.parent=xZoolandMap
+                }else{
+                    zoolMap.parent=xApp
+                }
             }
         }
+    }
+
+    function resetView() {
+        container.scale = 0.75
+        container.x = 0
+        container.y = 0
+        // Si usas el Flickable para moverte, también podrías resetear su contenido
+        flick.contentX = 0
+        flick.contentY = 0
     }
 }

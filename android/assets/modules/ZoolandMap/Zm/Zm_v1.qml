@@ -73,7 +73,7 @@ Rectangle{
         visible: false
     }
     Image{
-        width: app.fs*1.5
+        width: app.fs
         height: width
         source: Qt.platform.os==='android'?'assets:/imgs/imgs_v2/earth.png':'file:///home/ns/nsp/zoolandv2/android/assets/imgs/imgs_v2/earth.png'
         rotation: 0

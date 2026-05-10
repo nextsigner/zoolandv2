@@ -13,8 +13,8 @@ import ZmComboBox 1.0
 
 ApplicationWindow {
     id: app
-    width: Qt.platform.os==='android'?Screen.width:400
-    height: Qt.platform.os==='android'?Screen.height:900
+    width: Qt.platform.os==='android'?Screen.width:350
+    height: Qt.platform.os==='android'?Screen.height:700
     x: 0
     visible: true
     visibility: Qt.platform.os==='android'?'Maximized':'Windowed'
@@ -80,7 +80,7 @@ ApplicationWindow {
     Rectangle{
         id: xApp
         width: Qt.platform.os==='android'?Screen.width*0.9:app.width
-        height: parent.height
+        height: Qt.platform.os==='android'?parent.height:700
         color: 'transparent'
         border.width: 0
         border.color: 'blue'
@@ -95,6 +95,7 @@ ApplicationWindow {
                 spacing: app.fs*2
                 width: parent.width
                 anchors.horizontalCenter: parent.horizontalCenter
+                visible: !app.appRotated
                 Rectangle{
                     id: xTop
                     width: xApp.width
@@ -231,10 +232,15 @@ ApplicationWindow {
                         width: app.fs*2
                         fs: app.fs*1.5
                         anchors.verticalCenter: parent.verticalCenter
-                        visible: app.uFilePathLoaded!==''
-                        onClicked: {
-                            let p=app.currentJson.params
-                            let fecha=p.d+'.'+p.m+'.'+p.a
+                            onClicked: {
+                            let fecha=''
+                            if(app.uFilePathLoaded===''){
+                                let d=new Date(Date.now())
+                                fecha=''+d.getDate()+'.'+parseInt(d.getMonth()+1)+'.'+d.getFullYear()
+                            }else{
+                                let p=app.currentJson.params
+                                fecha=p.d+'.'+p.m+'.'+p.a
+                            }
                             znc.load(fecha)
                         }
                     }
@@ -244,7 +250,7 @@ ApplicationWindow {
                         width: app.fs*2
                         fs: app.fs*1.5
                         anchors.verticalCenter: parent.verticalCenter
-                        visible: app.uFilePathLoaded!==''
+                        //visible: app.uFilePathLoaded!==''
                         onClicked: {
                             let s=''
                             let d=new Date(Date.now())
@@ -461,6 +467,24 @@ ApplicationWindow {
                                 txt.text='zoolMap.posMaxExt: '+zoolMap.posMaxExt
                             }
                         }
+                        //Rotar Ventana en Windows
+                        ZmButton{
+                            text: 'Rotar Ventanta'
+                            //width: app.fs*2
+                            //fs: !app.appRotated?app.fs*1.5:app.fs*0.75
+                            visible: Qt.platform.os==='linux'
+                            onClicked:{
+                                if(app.width===400){
+                                    app.width=700
+                                    app.height=350
+                                    app.appRotated=true
+                                }else{
+                                    app.width=350
+                                    app.height=700
+                                    appRotated=false
+                                }
+                            }
+                        }
                         ZmButton{
                             text: 'Copiar Texto'
                             fs: app.fs
@@ -497,7 +521,10 @@ ApplicationWindow {
             }
         }*/
         Form{id: form}
-        ZoolandNumCalc{id: znc}
+        ZoolandNumCalc{
+            id: znc
+            height: xApp.height
+        }
         Rectangle{
             id: xNot
             width: app.fs*10

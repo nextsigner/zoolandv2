@@ -11,7 +11,7 @@ import ZoolandNumCalc.NumCalcLog 1.0
 Rectangle{
     id: r
     width: parent.width
-    height: parent.parent.height
+    height: parent.height
     border.width: 1
     border.color: apps.fontColor
     radius: app.fs*0.25
@@ -25,16 +25,20 @@ Rectangle{
     }
     Column{
         id: col
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
+        anchors.top: parent.top
+        anchors.topMargin: app.fs
+        anchors.horizontalCenter: parent.horizontalCenter
         spacing: app.fs*0.25
         Item{width: 1; height: app.fs}
         Text{
             id: txtTit
-            text:'<b>NumCalc</b> Ingresa una fecha de nacimiento bajo el siguiente formato: 20.6.1975'
-            font.pixelSize: app.fs*0.75
+            text:'<b>Numerología</b><br><p style="font-size:'+parseInt(app.fs)+'px">Ingresa una fecha de nacimiento con el siguiente formato: 20.6.1975</p>'
+            font.pixelSize: app.fs*1.5
             color: apps.fontColor
             width: r.width-app.fs*3
             wrapMode: Text.WordWrap
+            textFormat: Text.RichText
             anchors.horizontalCenter: parent.horizontalCenter
             //visible: false
         }
@@ -51,10 +55,16 @@ Rectangle{
                 border.width: 1
                 radius: app.fs*0.25
                 anchors.verticalCenter: parent.verticalCenter
+                Text {
+                    text: 'Calcular'
+                    font.pixelSize: app.fs*0.75
+                    color: 'white'
+                    anchors.bottom: parent.top
+                }
                 TextInput{
                     id: tiSearch
                     width: parent.width-app.fs*0.5
-                    height: parent.height
+                    height: parent.height*0.8
                     color: apps.fontColor
                     font.pixelSize: app.fs
                     maximumLength: 100
@@ -63,14 +73,7 @@ Rectangle{
                     onTextChanged: printNumMision()
                     Keys.onReturnPressed: {
                         printNumMision()
-                    }
-                    Text {
-                        text: 'Calcular'
-                        font.pixelSize: app.fs*0.5
-                        color: 'white'
-                        //anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.top
-                    }
+                    }                    
                 }
 
 
@@ -86,15 +89,18 @@ Rectangle{
         NumCalcLog{
             id: log
             width: r.width
-            height: r.height-app.fs*3
+            height: r.height-txtTit.contentHeight-xTiSearch.height-app.fs*4
+            //border.width: 10
             visible: true
         }
 
     }
+    //Cerrar esta ventana
     ZmButton{
         id: botChangeArea
-        text:'X'
+        text:'\uf00d'
         fs: app.fs
+        isCuad: true
         anchors.right: parent.right
         anchors.rightMargin: app.fs*0.1
         anchors.top: parent.top
@@ -120,9 +126,9 @@ Rectangle{
         let sf=''+d+'/'+m+'/'+a
         let aGetNums=getNums(sf)
         //currentNumNacimiento=aGetNums[0]
-        finalText+='Número de Sendero/Camino de Vida: '+aGetNums[0]+'\n'
+        finalText+='Número de Sendero / Camino de Vida: '+aGetNums[0]+'\n'
         if(parseInt(aGetNums[3])>0){
-            finalText+='Número Karmaico: '+aGetNums[3]+'\n'
+            finalText+='Número Kármico: '+aGetNums[3]+'\n'
         }
 
         let msfd=(''+d).split('')
