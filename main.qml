@@ -7,6 +7,7 @@ import unik.Unik 1.0
 import Qt.labs.settings
 
 import ZoolandMap 3.0
+import ZoolElementsView 1.0
 import ZoolandNumCalc 1.0
 import ZmButton 1.0
 import ZmComboBox 1.0
@@ -32,6 +33,7 @@ ApplicationWindow {
     property var currentJson
     property var currentJsonExt
 
+    property var signColors: ['red', '#FBE103', '#09F4E2', '#0D9FD6','red', '#FBE103', '#09F4E2', '#0D9FD6','red', '#FBE103', '#09F4E2', '#0D9FD6']
     property var aSigns: ['Aries', 'Tauro', 'Géminis', 'Cáncer', 'Leo', 'Virgo', 'Libra', 'Escorpio', 'Sagitario', 'Capricornio', 'Acuario', 'Piscis']
     property var aSignsEnergy: ['Ariana', 'Taurina', 'Geminiana', 'Canceriana', 'Leonina', 'Virginiana', 'Libriana', 'Escorpiana', 'Sagitariana', 'Capricorniana', 'Acuariana', 'Pisciana']
     property var aSignsLowerStyle: ['aries', 'tauro', 'geminis', 'cancer', 'leo', 'virgo', 'libra', 'escorpio', 'sagitario', 'capricornio', 'acuario', 'piscis']
@@ -134,12 +136,13 @@ ApplicationWindow {
                         Row{
                             spacing: app.fs*0.5
                             anchors.horizontalCenter: parent.horizontalCenter
+                            //Cargar Tránsitos en INT
                             ZmButton{
                                 text: '\uf0e7'
                                 width: app.fs*2
                                 fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
-                                visible: app.uFilePathLoaded===''
+                                visible: app.uFilePathLoaded==='' || app.uFilePathLoaded.indexOf('Ahora ')===0
                                 onClicked: {
                                     let s=''
                                     let d=new Date(Date.now())
@@ -244,13 +247,25 @@ ApplicationWindow {
                             znc.load(fecha)
                         }
                     }
+                    //Ver Elementos
+                    ZmButton{
+                        text: '\uf03a'
+                        width: app.fs*2
+                        fs: app.fs*1.5
+                        visible: app.uFilePathLoaded!==''
+                        anchors.verticalCenter: parent.verticalCenter
+                            onClicked: {
+                            //zoolElementsView.visible=!zoolElementsView.visible
+                                xZEV.visible=!xZEV.visible
+                        }
+                    }
                     //Cargar Tránsitos de ahora
                     ZmButton{
                         text: '\uf0e7'
                         width: app.fs*2
                         fs: app.fs*1.5
                         anchors.verticalCenter: parent.verticalCenter
-                        //visible: app.uFilePathLoaded!==''
+                        visible: app.uFilePathLoaded!==''
                         onClicked: {
                             let s=''
                             let d=new Date(Date.now())
@@ -262,6 +277,7 @@ ApplicationWindow {
                             let jf=getSweJson(va, vm, vd, vh, vmin, 0, 0.0, 0.0, 0, 'T')
                             app.currentJsonExt=jf
                             zoolMap.zm.objBodiesCircleExt.load(jf)
+                            //zoolElementsView.load(jf)
                             //app.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
                             //s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
                             //s += getList(jf)
@@ -333,6 +349,20 @@ ApplicationWindow {
                         fs:app.fs
                         parent: app.appRotated?xApp:xZoolandMap
                         anchors.horizontalCenter: parent.horizontalCenter
+                        Rectangle{
+                            id: xZEV
+                            color: apps.backgroundColor
+                            anchors.fill: parent
+                            visible: false//zoolElementsView.visible
+                            onVisibleChanged: {
+                                if(visible)zoolElementsView.load(app.currentJson)
+                            }
+                            ZoolElementsView{
+                                id: zoolElementsView
+                                //visible: false
+                            }
+                        }
+
                     }
                 }
                 Text{
