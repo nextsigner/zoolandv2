@@ -80,12 +80,19 @@ Rectangle {
             acceptedButtons: Qt.LeftButton
             onDoubleTapped: r.resetView()
         }
+        // Rectangle {
+        //     id: container
+        //     width: r.width
+        //     height: r.height
+        //     color: "transparent"
+        //     transformOrigin: Item.Center
         Rectangle {
             id: container
             width: r.width
             height: r.height
             color: "transparent"
-            transformOrigin: Item.Center
+            // CAMBIO: El origen arriba a la izquierda facilita el cálculo del desplazamiento
+            transformOrigin: Item.TopLeft
 
             // --- SOLUCIÓN PARA DESKTOP ---
             DragHandler {
@@ -108,6 +115,25 @@ Rectangle {
         PinchHandler {
             id: pinchHandler
             target: container
+            // SE ELIMINÓ: property: "scale" (No existe en esta versión)
+
+            minimumScale: 0.5
+            maximumScale: 12.0
+
+            // Bloqueamos la rotación si solo quieres zoom,
+            // ya que el PinchHandler intenta rotar por defecto.
+            minimumRotation: 0
+            maximumRotation: 0
+
+            onActiveChanged: {
+                if (active) {
+                    r.zoomingOrPaning = true
+                }
+            }
+        }
+        /*PinchHandler {
+            id: pinchHandler
+            target: container
             minimumScale: 0.5
             maximumScale: 12.0
             minimumRotation: 0
@@ -115,9 +141,15 @@ Rectangle {
             onScaleChanged: {
                 r.zoomingOrPaning = true
             }
-        }
+        }*/
 
         WheelHandler {
+            id: wheelHandler
+            target: container
+            property: "scale" // Asegúrate de que NO tenga errores de ortografía
+            acceptedModifiers: Qt.NoModifier
+        }
+        /*WheelHandler {
             id: wheelHandler
             target: container
             // Eliminamos la restricción de Qt.ControlModifier si quieres zoom libre
@@ -131,7 +163,7 @@ Rectangle {
                     container.scale = newScale;
                 }
             }
-        }
+        }*/
     }
 
 

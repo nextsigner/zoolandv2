@@ -4,7 +4,8 @@ import QtQuick.Controls.Material
 
 import swe 1.0
 import unik.Unik 1.0
-import Qt.labs.settings
+//import Qt.labs.settings
+import QtCore
 
 import ZoolandMap 3.0
 import ZoolElementsView 1.0
@@ -48,7 +49,7 @@ ApplicationWindow {
     Swe{id: swe}
     Settings{
         id: apps
-        fileName: './'+app.title+'.cfg'
+        //fileName: './'+app.title+'.cfg'
         property color fontColor: 'white'
         property color backgroundColor: 'black'
         property bool showZoolandMap: false
@@ -346,6 +347,7 @@ ApplicationWindow {
                     ZoolandMap{
                         id: zoolMap
                         width: parent.width
+                        height: parent.height
                         fs:app.fs
                         parent: app.appRotated?xApp:xZoolandMap
                         anchors.horizontalCenter: parent.horizontalCenter

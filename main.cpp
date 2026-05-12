@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    QCoreApplication::setOrganizationName("Unikode.org");
+    QCoreApplication::setApplicationName("Zool");
     UL u;
     u.setEngine(&engine);
     if(!u.isStorageManagerGranted()){

@@ -1,17 +1,18 @@
 import QtQuick 2.0
 import ZoolElementsView.ZoolGroupElementItems 1.0
 import ZoolElementsView.ZoolGroupElementItemsPlanets 1.0
-import Qt.labs.settings 1.0
+import QtCore
 
 Rectangle{
     id: r
-    width: colZoolGroupElementItems.width+colZoolGroupElementItemsPlanets.width//+app.fs
-    height: colZoolGroupElementItems.height+app.fs
+    width: parent.width//colZoolGroupElementItems.width+colZoolGroupElementItemsPlanets.width//+app.fs
+    height: parent.height   //colZoolGroupElementItems.height+app.fs
     anchors.right: parent.right
     anchors.rightMargin: 0-width*0.75
-    border.width: 0
+    border.width: 10
     border.color:'yellow'
     color: 'transparent'
+    anchors.centerIn: parent
     property int fs: app.fs*10//2*s.zoom
     property alias settings: s
     property bool showBack: false
@@ -24,8 +25,6 @@ Rectangle{
     }
     Settings{
         id: s
-        //fileName: './modules/ZoolElementsView/ZoolElementsView.cfg'
-        fileName: u.getPath(4)+'/ZoolElementsView.cfg'
         property real zoom: 1.0
     }
 
@@ -36,7 +35,7 @@ Rectangle{
             spacing: app.fs*0.5
             anchors.top: parent.top
             //opacity: !zm.capturing?0.0:1.0
-            Behavior on opacity{NumberAnimation{duration:!zm.capturing?250:0}}
+            //Behavior on opacity{NumberAnimation{duration:!zm.capturing?250:0}}
             ZoolGroupElementItemsPlanets{id: groupFrontPlanets; fs: r.fs; showTitle: r.showBack}
             ZoolGroupElementItemsPlanets{id: groupBackPlanets; fs: r.fs; isBack: true; showTitle: r.showBack; visible: r.showBack}
         }

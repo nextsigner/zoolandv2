@@ -125,7 +125,7 @@ Rectangle{
             anchors.centerIn: parent
             source: Qt.platform.os==='android'?'assets:/imgs/imgs_v2/glifos/'+zoolMap.bodiesRes[r.numBodie]+'.svg':'file:///home/ns/nsp/zoolandv2/android/assets/imgs/imgs_v2/glifos/'+zoolMap.bodiesRes[r.numBodie]+'.svg'
 
-            sourceSize: Qt.size(width, height)
+            //sourceSize: Qt.size(width, height)
 
             // En MultiEffect, la imagen fuente DEBE ser invisible
             visible: false
@@ -144,6 +144,7 @@ Rectangle{
             colorizationColor: r.currentColor//zoolMap.bodieColor
 
             autoPaddingEnabled: true
+            antialiasing: true
         }
 
     }
