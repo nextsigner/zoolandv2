@@ -8,6 +8,7 @@ import unik.Unik 1.0
 import QtCore
 
 import ZoolandMap 3.0
+import ZmMoveTime 1.0
 import ZoolElementsView 1.0
 import ZoolandNumCalc 1.0
 import ZmButton 1.0
@@ -158,6 +159,7 @@ ApplicationWindow {
                                     s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
                                     s += getList(jf)
                                     txt.text = s
+                                    txtMoveTime.text=''+vd+'/'+vm+'/'+va+' '+vh+':'+vmin+'hs'
 
                                     //app.modo=0
                                     //let s='Inicio!'
@@ -268,6 +270,7 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         visible: app.uFilePathLoaded!==''
                         onClicked: {
+                            txtMoveTime.text=''
                             let s=''
                             let d=new Date(Date.now())
                             let va=d.getFullYear()
@@ -293,6 +296,7 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         visible: app.uFilePathLoaded!==''
                         onClicked: {
+                            txtMoveTime.text=''
                             app.modo='rs'
                         }
                     }
@@ -351,6 +355,79 @@ ApplicationWindow {
                         fs:app.fs
                         parent: app.appRotated?xApp:xZoolandMap
                         anchors.horizontalCenter: parent.horizontalCenter
+                        ZmMoveTime{
+                            id: zmt
+                            anchors.bottom: parent.bottom
+                            onRelease:{
+                                //txt.text='Posición: '+value
+                                let p=app.currentJson.params
+                                let vd=p.d
+                                let vm=p.m
+                                let va=p.a
+                                let vh=p.h
+                                let vmin=p.min
+                                let vlat=p.lat
+                                let vlon=p.lon
+                                let valt=p.alt
+                                let vgmt=p.gmt
+                                let d = new Date(va, vm-1, vd, vh, vmin)
+                                d.setDate(d.getDate()+value)
+                                let nvd=d.getDate()
+                                let nvm=d.getMonth()+1
+                                let nva=d.getFullYear()
+                                let nvh=d.getHours()
+                                let nvmin=d.getMinutes()
+                                txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
+                                //return
+                                let jf=getSweJson(nva, nvm, nvd, nvh, nvmin, vgmt, vlat, vlon, valt, 'T')
+                                app.currentJson=jf
+                                app.uFilePathLoaded='Tránsito '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
+                                let s=''
+                                s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
+                                s += getList(jf)
+                                txt.text = s
+                            }
+                            onPositionChanged: {
+                                //txt.text='Posición: '+value
+                                let p=app.currentJson.params
+                                let vd=p.d
+                                let vm=p.m
+                                let va=p.a
+                                let vh=p.h
+                                let vmin=p.min
+                                let vlat=p.lat
+                                let vlon=p.lon
+                                let valt=p.alt
+                                let vgmt=p.gmt
+                                let d = new Date(va, vm-1, vd, vh, vmin)
+                                d.setDate(d.getDate()+value)
+                                let nvd=d.getDate()
+                                let nvm=d.getMonth()+1
+                                let nva=d.getFullYear()
+                                let nvh=d.getHours()
+                                let nvmin=d.getMinutes()
+                                txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
+                            }
+                            Text{
+                                id: txtMoveTime
+                                text:''
+                                font.pixelSize: app.fs
+                                color: apps.fontColor
+                                anchors.bottom: parent.top
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                Rectangle{
+                                    width: parent.contentWidth+app.fs*0.4
+                                    height: parent.contentHeight+app.fs*0.4
+                                    color: apps.backgroundColor
+                                    radius: app.fs*0.1
+                                    border.width: 1
+                                    border.color: apps.fontColor
+                                    opacity: 0.75
+                                    anchors.centerIn: parent
+                                    z: parent.z-1
+                                }
+                            }
+                        }
                         Rectangle{
                             id: xZEV
                             color: apps.backgroundColor

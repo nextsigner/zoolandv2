@@ -218,7 +218,8 @@ Rectangle {
         //Expandir Mapa
         ZmButton{
             text: '\uf07d'
-            fs: !app.appRotated?app.fs*1.5:app.fs*0.75
+            fs: !app.appRotated?app.fs*0.75:app.fs*0.35
+            width:!app.appRotated?app.fs*1.5:app.fs*0.75
             isCuad: true
             onClicked:{
                 if(zoolMap.parent===xApp){
