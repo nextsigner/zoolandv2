@@ -155,6 +155,7 @@ ApplicationWindow {
                                     let vmin=d.getMinutes()
                                     let jf=getSweJson(va, vm, vd, vh, vmin, 0, 0.0, 0.0, 0, 'T')
                                     app.currentJson=jf
+                                    app.modo='trans'
                                     app.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
                                     s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
                                     s += getList(jf)
@@ -280,6 +281,7 @@ ApplicationWindow {
                             let vmin=d.getMinutes()
                             let jf=getSweJson(va, vm, vd, vh, vmin, 0, 0.0, 0.0, 0, 'T')
                             app.currentJsonExt=jf
+                            app.modo='trans'
                             zoolMap.zm.objBodiesCircleExt.load(jf)
                             //zoolElementsView.load(jf)
                             //app.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
@@ -342,25 +344,38 @@ ApplicationWindow {
                     }
 
                 }
-                Item{
+                Rectangle{
                     id: xZoolandMap
                     width: xApp.width
                     height: width
+                    color: 'transparent'
+                    border.width: 0
+                    border.color: 'green'
                     anchors.horizontalCenter: parent.horizontalCenter
                     visible: app.uFilePathLoaded!==''
                     ZoolandMap{
                         id: zoolMap
-                        width: parent.width
-                        height: parent.height
-                        fs:app.fs
+                        width: !app.appRotated?parent.width:app.height
+                        height: !app.appRotated?parent.height:width//-app.fs
+                        fs:Qt.platform.os==='android'?app.fs:app.fs*0.5
+                        border.width: 0
+                        border.color: 'blue'
                         parent: app.appRotated?xApp:xZoolandMap
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.centerIn: parent
+                        //anchors.horizontalCenter: parent.horizontalCenter
+                        //z: parent.z-1
                         ZmMoveTime{
                             id: zmt
                             anchors.bottom: parent.bottom
+                            visible: false
                             onRelease:{
                                 //txt.text='Posición: '+value
-                                let p=app.currentJson.params
+                                let p
+                                if(app.modo==='trans'){
+                                    p=app.currentJsonExt.params
+                                }else{
+                                    p=app.currentJson.params
+                                }
                                 let vd=p.d
                                 let vm=p.m
                                 let va=p.a
@@ -371,7 +386,7 @@ ApplicationWindow {
                                 let valt=p.alt
                                 let vgmt=p.gmt
                                 let d = new Date(va, vm-1, vd, vh, vmin)
-                                d.setDate(d.getDate()+value)
+                                d.setDate(d.getDate()+pos)
                                 let nvd=d.getDate()
                                 let nvm=d.getMonth()+1
                                 let nva=d.getFullYear()
@@ -380,11 +395,25 @@ ApplicationWindow {
                                 txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
                                 //return
                                 let jf=getSweJson(nva, nvm, nvd, nvh, nvmin, vgmt, vlat, vlon, valt, 'T')
-                                app.currentJson=jf
-                                app.uFilePathLoaded='Tránsito '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
                                 let s=''
-                                s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
-                                s += getList(jf)
+                                if(app.modo==='trans'){
+                                    app.currentJsonExt=jf
+                                    zoolMap.zm.objBodiesCircleExt.load(jf)
+                                    zoolMap.zm.objHousesCircleExt.load(jf)
+                                    s+='Tránsitos:\n\n'
+                                    s+='Fecha de Nacimiento:\n'
+                                    s+=getMom(app.currentJson)
+                                    s+='Tránsito:\n'
+                                    s+=getMom(jf)
+                                    s+=getList(jf)
+                                    s+='\nCarta Natal\n'
+                                    s+=getList(app.currentJson)
+                                }else{
+                                    app.currentJson=jf
+                                    app.uFilePathLoaded='Tránsito '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
+                                    s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
+                                    s += getList(jf)
+                                }
                                 txt.text = s
                             }
                             onPositionChanged: {
@@ -400,7 +429,7 @@ ApplicationWindow {
                                 let valt=p.alt
                                 let vgmt=p.gmt
                                 let d = new Date(va, vm-1, vd, vh, vmin)
-                                d.setDate(d.getDate()+value)
+                                d.setDate(d.getDate()+pos)
                                 let nvd=d.getDate()
                                 let nvm=d.getMonth()+1
                                 let nva=d.getFullYear()
@@ -583,7 +612,7 @@ ApplicationWindow {
                             //fs: !app.appRotated?app.fs*1.5:app.fs*0.75
                             visible: Qt.platform.os==='linux'
                             onClicked:{
-                                if(app.width===400){
+                                if(app.width===350){
                                     app.width=700
                                     app.height=350
                                     app.appRotated=true

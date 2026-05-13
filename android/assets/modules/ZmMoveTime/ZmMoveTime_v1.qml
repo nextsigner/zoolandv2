@@ -6,8 +6,8 @@ Rectangle {
     height: app.fs
     color: "transparent"
 
-    signal positionChanged(int value)
-    signal release(int value)
+    signal positionChanged(int pos)
+    signal release(int pos)
 
     readonly property int limit: width * 0.4
     property int currentValue: 0

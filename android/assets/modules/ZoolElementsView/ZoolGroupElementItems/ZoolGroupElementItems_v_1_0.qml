@@ -5,12 +5,13 @@ import "./ZoolElementItem"
 
 Rectangle{
     id: r
-    width: r.fs*6
+    width: !app.appRotated?parent.width-app.fs:parent.height-app.fs
     height: col.height//app.fs*4
-    border.width: 0
+    border.width: 4
     border.color: 'red'
     color: 'transparent'
-    property int fs: app.fs*3
+    anchors.centerIn: parent
+    property int fs: width*0.12//app.fs*3
     property bool isBack: false
     property bool showTitle: false
     property int firstItemHeight: itemFuego.height

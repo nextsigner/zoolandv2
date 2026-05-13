@@ -10,7 +10,7 @@ Rectangle {
     color: apps.backgroundColor
     border.width: 1
     border.color: apps.fontColor
-    clip: true
+    //clip: true
     anchors.horizontalCenter: parent.horizontalCenter
     property alias zm: zm
     property int fs: 50
@@ -91,6 +91,8 @@ Rectangle {
             width: r.width
             height: r.height
             color: "transparent"
+            x: (parent.width-width)*0.5
+            y: (parent.height-height)*0.5
             // CAMBIO: El origen arriba a la izquierda facilita el cálculo del desplazamiento
             transformOrigin: Item.TopLeft
 
@@ -214,7 +216,12 @@ Rectangle {
         }
     }
     Row{
+        //parent: !app.appRotated?r:xApp
+        //z:10000
+        //z:!app.appRotated?xTxtBodieSelected.z+1:r.z+1
         anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.leftMargin: !app.appRotated?0:0-((xApp.width-r.width)*0.5)
         //Expandir Mapa
         ZmButton{
             text: '\uf07d'
@@ -229,14 +236,29 @@ Rectangle {
                 }
             }
         }
+        //Ver MoveTime
+        ZmButton{
+            text: '\uf017'
+            fs: !app.appRotated?app.fs*0.75:app.fs*0.35
+            width:!app.appRotated?app.fs*1.5:app.fs*0.75
+            isCuad: true
+            opacity: zmt.visible?1.0:0.5
+            onClicked:{
+                zmt.visible=!zmt.visible
+            }
+        }
     }
 
     function resetView() {
         container.scale = 0.75
-        container.x = 0
-        container.y = 0
+        //container.x = 0//+((container.parent.width-container.width)*0.5)
+        //container.y = 0//+((container.parent.height-container.height)*0.5)
+        container.x = 0-(container.parent.width-container.width)*0.5
+        container.y = 0-(container.parent.height-container.height)*0.5
         // Si usas el Flickable para moverte, también podrías resetear su contenido
         flick.contentX = 0
         flick.contentY = 0
+        //zm.x= zm.parent.width * 0.2
+        //zm.y= zm.   parent.height * 0.2
     }
 }
