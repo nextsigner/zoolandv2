@@ -10,7 +10,7 @@ Rectangle {
     color: apps.backgroundColor
     border.width: 1
     border.color: apps.fontColor
-    //clip: true
+    clip: !app.appRotated
     anchors.horizontalCenter: parent.horizontalCenter
     property alias zm: zm
     property int fs: 50

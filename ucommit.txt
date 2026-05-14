@@ -1,1 +1,1 @@
-i7: Se agrega move time a trans
+i7: Se optimiza ZmMoveTime

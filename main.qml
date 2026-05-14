@@ -160,7 +160,9 @@ ApplicationWindow {
                                     s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
                                     s += getList(jf)
                                     txt.text = s
-                                    txtMoveTime.text=''+vd+'/'+vm+'/'+va+' '+vh+':'+vmin+'hs'
+                                    zmt.onlySetDate=true
+                                    zmt.targetDate=d
+                                    //txtMoveTime.text=''+vd+'/'+vm+'/'+va+' '+vh+':'+vmin+'hs'
 
                                     //app.modo=0
                                     //let s='Inicio!'
@@ -283,6 +285,8 @@ ApplicationWindow {
                             app.currentJsonExt=jf
                             app.modo='trans'
                             zoolMap.zm.objBodiesCircleExt.load(jf)
+                            zmt.onlySetDate=true
+                            zmt.targetDate=d
                             //zoolElementsView.load(jf)
                             //app.uFilePathLoaded='Ahora '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
                             //s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
@@ -368,56 +372,21 @@ ApplicationWindow {
                             id: zmt
                             anchors.bottom: parent.bottom
                             visible: false
-                            onRelease:{
+                            /*onRelease:{
+                                return
+                                if(pos===0)return
                                 //txt.text='Posición: '+value
-                                let p
-                                if(app.modo==='trans'){
-                                    p=app.currentJsonExt.params
-                                }else{
-                                    p=app.currentJson.params
+
+                            }*/
+                            //onPositionChanged: {
+                            //onCurrentValueChanged:{
+                            //onDateChanged: {//(date newDate)
+                            onTargetDateChanged: {
+                                if(!app.currentJson)return
+                                if(onlySetDate){
+                                    onlySetDate=false
+                                    return
                                 }
-                                let vd=p.d
-                                let vm=p.m
-                                let va=p.a
-                                let vh=p.h
-                                let vmin=p.min
-                                let vlat=p.lat
-                                let vlon=p.lon
-                                let valt=p.alt
-                                let vgmt=p.gmt
-                                let d = new Date(va, vm-1, vd, vh, vmin)
-                                d.setDate(d.getDate()+pos)
-                                let nvd=d.getDate()
-                                let nvm=d.getMonth()+1
-                                let nva=d.getFullYear()
-                                let nvh=d.getHours()
-                                let nvmin=d.getMinutes()
-                                txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
-                                //return
-                                let jf=getSweJson(nva, nvm, nvd, nvh, nvmin, vgmt, vlat, vlon, valt, 'T')
-                                let s=''
-                                if(app.modo==='trans'){
-                                    app.currentJsonExt=jf
-                                    zoolMap.zm.objBodiesCircleExt.load(jf)
-                                    zoolMap.zm.objHousesCircleExt.load(jf)
-                                    s+='Tránsitos:\n\n'
-                                    s+='Fecha de Nacimiento:\n'
-                                    s+=getMom(app.currentJson)
-                                    s+='Tránsito:\n'
-                                    s+=getMom(jf)
-                                    s+=getList(jf)
-                                    s+='\nCarta Natal\n'
-                                    s+=getList(app.currentJson)
-                                }else{
-                                    app.currentJson=jf
-                                    app.uFilePathLoaded='Tránsito '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
-                                    s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
-                                    s += getList(jf)
-                                }
-                                txt.text = s
-                            }
-                            onPositionChanged: {
-                                //txt.text='Posición: '+value
                                 let p=app.currentJson.params
                                 let vd=p.d
                                 let vm=p.m
@@ -428,14 +397,80 @@ ApplicationWindow {
                                 let vlon=p.lon
                                 let valt=p.alt
                                 let vgmt=p.gmt
-                                let d = new Date(va, vm-1, vd, vh, vmin)
-                                d.setDate(d.getDate()+pos)
+                                /*let d = new Date(va, vm-1, vd, vh, vmin)
+                                d.setDate(d.getDate()+currentValue)
                                 let nvd=d.getDate()
                                 let nvm=d.getMonth()+1
                                 let nva=d.getFullYear()
                                 let nvh=d.getHours()
-                                let nvmin=d.getMinutes()
+                                let nvmin=d.getMinutes()*/
+                                let nvd=targetDate.getDate()
+                                let nvm=targetDate.getMonth()+1
+                                let nva=targetDate.getFullYear()
+                                let nvh=targetDate.getHours()
+                                let nvmin=targetDate.getMinutes()
                                 txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
+                                tLoadMoveTime.d=targetDate
+                                tLoadMoveTime.restart()
+                            }
+                            Timer{
+                                id: tLoadMoveTime
+                                running: false
+                                repeat: false
+                                interval: 1000
+                                property var d
+                                onTriggered: {
+                                    let p
+                                    if(app.modo==='trans'){
+                                        if(zoolMap.ev){
+                                            p=app.currentJsonExt.params
+                                        }else{
+                                            p=app.currentJson.params
+                                        }
+                                    }else{
+                                        p=app.currentJson.params
+                                    }
+                                    let vd=p.d
+                                    let vm=p.m
+                                    let va=p.a
+                                    let vh=p.h
+                                    let vmin=p.min
+                                    let vlat=p.lat
+                                    let vlon=p.lon
+                                    let valt=p.alt
+                                    let vgmt=p.gmt
+                                    // let d = new Date(va, vm-1, vd, vh, vmin)
+                                    // d.setDate(d.getDate()+pos)
+                                    let nvd=d.getDate()
+                                    let nvm=d.getMonth()+1
+                                    let nva=d.getFullYear()
+                                    let nvh=d.getHours()
+                                    let nvmin=d.getMinutes()
+                                    txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
+                                    //return
+                                    let jf=getSweJson(nva, nvm, nvd, nvh, nvmin, vgmt, vlat, vlon, valt, 'T')
+                                    let s=''
+                                    if(app.modo==='trans' && zoolMap.ev){
+                                        app.currentJsonExt=jf
+                                        zoolMap.zm.objBodiesCircleExt.load(jf)
+                                        zoolMap.zm.objHousesCircleExt.load(jf)
+                                        s+='Tránsitos:\n\n'
+                                        s+='Fecha de Nacimiento:\n'
+                                        s+=getMom(app.currentJson)
+                                        s+='Tránsito:\n'
+                                        s+=getMom(jf)
+                                        s+=getList(jf)
+                                        s+='\nCarta Natal\n'
+                                        s+=getList(app.currentJson)
+                                    }else{
+                                        app.currentJson=jf
+                                        app.uFilePathLoaded='Tránsito '+vd+'/'+vm+'/'+va+' '+vh+':'+vmin
+                                        s +=app.uFilePathLoaded+'\nTránsitos planetarios global/mundial.\n\n'
+                                        s += getList(jf)
+                                    }
+                                    txt.text = s
+
+                                }
                             }
                             Text{
                                 id: txtMoveTime

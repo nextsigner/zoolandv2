@@ -18,6 +18,7 @@ Rectangle{
         if(pos<0)return
         //tSetAspsWidth.restart()
     }
+    onRotationChanged: setStatus(false)
     //Behavior on width{NumberAnimation{duration: 0}}
     Timer{
         id: tSetAspsWidth
@@ -73,6 +74,8 @@ Rectangle{
             enabled: !zoolMap.zoomingOrPaning
             anchors.fill: parent
             onClicked: {
+                setStatus(true)
+                return
                 if(!r.isExt && zoolMap.currentIndexBodie===r.numBodie){
                     zoolMap.currentIndexBodie=-1
                     zoolMap.currentIndexSign=-1
@@ -175,5 +178,54 @@ Rectangle{
             }
         }
     }
-
+    function setStatus(fromClick){
+        if(fromClick){
+            if(!r.isExt && zoolMap.currentIndexBodie===r.numBodie){
+                zoolMap.currentIndexBodie=-1
+                zoolMap.currentIndexSign=-1
+                zoolMap.currentIndexHouse=-1
+                return
+            }
+            if(r.isExt && zoolMap.currentIndexBodieExt===r.numBodie){
+                zoolMap.currentIndexBodieExt=-1
+                zoolMap.currentIndexSignExt=-1
+                zoolMap.currentIndexHouseExt=-1
+                return
+            }
+        }
+        let j
+        if(!r.isExt){
+            if(!app.currentJson)return
+            j=app.currentJson
+        }else{
+            if(!app.currentJsonExt)return
+            j=app.currentJsonExt
+        }
+        let gms=app.getDDToDMS(j.pc['c'+r.numBodie].gdec)
+        let is=app.getIndexSign(j.pc['c'+r.numBodie].gdec)
+        r.is=is
+        let ih=app.getHouseIndexFromArrayDegs(j.pc['c'+r.numBodie].gdec, app.getJsonPhToArray(j.ph))
+        if(!r.isExt){
+            ih=app.getHouseIndexFromArrayDegs(j.pc['c'+r.numBodie].gdec, app.getJsonPhToArray(j.ph))
+        }else{
+            ih=app.getHouseIndexFromArrayDegs(j.pc['c'+r.numBodie].gdec, app.getJsonPhToArray(app.currentJson.ph))
+        }
+        r.ih=ih
+        let rsgdeg=0
+        //if(fromClick){
+            if(!r.isExt){
+                if(fromClick)zoolMap.currentIndexBodie=r.numBodie
+                if(fromClick)zoolMap.currentIndexSign=r.is
+                if(fromClick)zoolMap.currentIndexHouse=r.ih
+                rsgdeg=parseInt(gms.deg-(30*(r.is)))
+                zoolMap.currentStrDdMmSs='°'+rsgdeg+' \''+gms.min+'\'\''+parseInt(gms.sec)
+            }else{
+                if(fromClick)zoolMap.currentIndexBodieExt=r.numBodie
+                zoolMap.currentIndexSignExt=r.is
+                if(fromClick)zoolMap.currentIndexHouseExt=r.ih
+                rsgdeg=parseInt(gms.deg-(30*(r.is)))
+                zoolMap.currentStrDdMmSsExt='°'+rsgdeg+' \''+gms.min+'\'\''+parseInt(gms.sec)
+            }
+        //}
+    }
 }
