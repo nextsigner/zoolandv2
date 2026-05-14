@@ -1,1 +1,1 @@
-i7: Se optimiza ZmMoveTime
+i7: Se crea el apk v1.3.19

@@ -20,7 +20,7 @@ ApplicationWindow {
     height: Qt.platform.os==='android'?Screen.height:700
     x: 0
     visible: true
-    visibility: Qt.platform.os==='android'?'Maximized':'Windowed'
+    visibility: Qt.platform.os==='android'?'FullScreen':'Windowed'
     title: 'ZoolAnd'
     color: 'black'
     //property alias app: r
@@ -361,7 +361,7 @@ ApplicationWindow {
                         id: zoolMap
                         width: !app.appRotated?parent.width:app.height
                         height: !app.appRotated?parent.height:width//-app.fs
-                        fs:Qt.platform.os==='android'?app.fs:app.fs*0.5
+                        fs:Qt.platform.os==='android'?(!app.appRotated?app.fs:app.fs*0.25):app.fs*0.5
                         border.width: 0
                         border.color: 'blue'
                         parent: app.appRotated?xApp:xZoolandMap
@@ -475,10 +475,11 @@ ApplicationWindow {
                             Text{
                                 id: txtMoveTime
                                 text:''
-                                font.pixelSize: app.fs
+                                font.pixelSize: !app.appRotated?app.fs:app.fs*0.5
                                 color: apps.fontColor
                                 anchors.bottom: parent.top
                                 anchors.horizontalCenter: parent.horizontalCenter
+                                visible: text!==''
                                 Rectangle{
                                     width: parent.contentWidth+app.fs*0.4
                                     height: parent.contentHeight+app.fs*0.4

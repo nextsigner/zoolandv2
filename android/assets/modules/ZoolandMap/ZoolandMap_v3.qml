@@ -25,7 +25,7 @@ Rectangle {
     property int posMaxExt: 0
 
     //Houses
-    property int wl: app.fs*0.1
+    property int wl: !app.appRotated?app.fs*0.1:2//app.fs*0.02
     property color cl: 'white'
 
     //Status
@@ -175,6 +175,8 @@ Rectangle {
         width: txtBodieSelected.contentWidth+app.fs*0.25
         height: txtBodieSelected.contentHeight+app.fs*0.25
         color: 'transparent'
+        anchors.left: parent.left
+        anchors.leftMargin: !app.appRotated?0:0-((xApp.width-r.width)*0.5)
         visible: r.currentIndexBodie>-1 && r.currentIndexSign>-1 && r.currentIndexHouse>-1
         Rectangle{
             anchors.fill: parent
@@ -198,6 +200,7 @@ Rectangle {
         height: txtBodieSelected.contentHeight+app.fs*0.25
         color: 'transparent'
         anchors.right: parent.right
+        anchors.rightMargin: !app.appRotated?0:0-((xApp.width-r.width)*0.5)
         visible: r.currentIndexBodieExt>-1 && r.currentIndexSignExt>-1 && r.currentIndexHouseExt>-1
         Rectangle{
             anchors.fill: parent

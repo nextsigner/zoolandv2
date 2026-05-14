@@ -42,20 +42,19 @@ Rectangle {
         Text {
             id: txtLabel
             text: r.modeLabels[r.mode] + ": " + r.formatDisplay()
-            color: "black" // apps.fontColor
+            color: apps.fontColor
             font.pixelSize: 12
             anchors.centerIn: parent
-            z: 2
-
+            //z: 2
             Rectangle{
                 width: parent.contentWidth + 10 // app.fs*0.1
                 height: parent.contentHeight + 5
-                color: "white" // apps.backgroundColor
+                color: apps.backgroundColor
                 radius: 3
                 border.width: 1
                 border.color: "black"
                 anchors.centerIn: parent
-                z: -1
+                z: parent.z-1
             }
         }
 
