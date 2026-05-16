@@ -239,6 +239,19 @@ Rectangle {
                 }
             }
         }
+        //Ver Elementos
+        ZmButton{
+            text: '\uf03a'
+            fs: !app.appRotated?app.fs*0.75:app.fs*0.35
+            width:!app.appRotated?app.fs*1.5:app.fs*0.75
+            isCuad: true
+            visible: app.uFilePathLoaded!==''
+            anchors.verticalCenter: parent.verticalCenter
+                onClicked: {
+                //zoolElementsView.visible=!zoolElementsView.visible
+                    xZEV.visible=!xZEV.visible
+            }
+        }
         //Ver MoveTime
         ZmButton{
             text: '\uf017'

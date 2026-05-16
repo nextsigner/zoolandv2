@@ -134,6 +134,12 @@ ApplicationWindow {
                                     txt.text=s
                                 }
                             }
+                            Text {
+                                text: 'Modo: '+app.modo
+                                font.pixelSize: app.fs*0.5
+                                color: apps.fontColor
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
                         }
                         Row{
                             spacing: app.fs*0.5
@@ -144,7 +150,7 @@ ApplicationWindow {
                                 width: app.fs*2
                                 fs: app.fs*1.5
                                 anchors.verticalCenter: parent.verticalCenter
-                                visible: app.uFilePathLoaded==='' || app.uFilePathLoaded.indexOf('Ahora ')===0
+                                //visible: app.uFilePathLoaded==='' || app.uFilePathLoaded.indexOf('Ahora ')===0
                                 onClicked: {
                                     let s=''
                                     let d=new Date(Date.now())
@@ -409,7 +415,7 @@ ApplicationWindow {
                                 let nva=targetDate.getFullYear()
                                 let nvh=targetDate.getHours()
                                 let nvmin=targetDate.getMinutes()
-                                txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
+                                txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'+' '+app.modo
                                 tLoadMoveTime.d=targetDate
                                 tLoadMoveTime.restart()
                             }
@@ -422,7 +428,7 @@ ApplicationWindow {
                                 onTriggered: {
                                     let p
                                     if(app.modo==='trans'){
-                                        if(zoolMap.ev){
+                                        if(zoolMap.zm.ev){
                                             p=app.currentJsonExt.params
                                         }else{
                                             p=app.currentJson.params
@@ -446,11 +452,11 @@ ApplicationWindow {
                                     let nva=d.getFullYear()
                                     let nvh=d.getHours()
                                     let nvmin=d.getMinutes()
-                                    txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'
+                                    txtMoveTime.text=''+nvd+'/'+nvm+'/'+nva+' '+nvh+':'+nvmin+'hs'+' '+app.modo
                                     //return
                                     let jf=getSweJson(nva, nvm, nvd, nvh, nvmin, vgmt, vlat, vlon, valt, 'T')
                                     let s=''
-                                    if(app.modo==='trans' && zoolMap.ev){
+                                    if(app.modo==='trans' && zoolMap.zm.ev){
                                         app.currentJsonExt=jf
                                         zoolMap.zm.objBodiesCircleExt.load(jf)
                                         zoolMap.zm.objHousesCircleExt.load(jf)
@@ -500,6 +506,10 @@ ApplicationWindow {
                             visible: false//zoolElementsView.visible
                             onVisibleChanged: {
                                 if(visible)zoolElementsView.load(app.currentJson)
+                            }
+                            MouseArea{
+                                anchors.fill: parent
+                                onClicked: xZEV.visible=false
                             }
                             ZoolElementsView{
                                 id: zoolElementsView

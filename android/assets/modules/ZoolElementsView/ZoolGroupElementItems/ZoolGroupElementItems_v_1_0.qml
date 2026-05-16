@@ -7,7 +7,7 @@ Rectangle{
     id: r
     width: !app.appRotated?parent.width-app.fs:parent.height-app.fs
     height: col.height//app.fs*4
-    border.width: 4
+    border.width: 0
     border.color: 'red'
     color: 'transparent'
     anchors.centerIn: parent

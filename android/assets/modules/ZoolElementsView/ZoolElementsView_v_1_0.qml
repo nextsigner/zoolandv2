@@ -7,7 +7,7 @@ Rectangle{
     height: parent.height   //colZoolGroupElementItems.height+app.fs
     anchors.right: parent.right
     anchors.rightMargin: 0-width*0.75
-    border.width: 10
+    border.width: 0
     border.color:'yellow'
     color: 'transparent'
     anchors.centerIn: parent
