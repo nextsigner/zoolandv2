@@ -63,6 +63,7 @@ Item{
         // 2. Recorremos cada cuerpo para encontrarle su nivel 'pos' ideal
         for(var i = 0; i < aGdecs.length; i++){
             let objActual = xBodies.children[i];
+            //objActual.setStatus(false)
             let nivelEncontrado = false;
             let nivelDePrueba = 0;
 

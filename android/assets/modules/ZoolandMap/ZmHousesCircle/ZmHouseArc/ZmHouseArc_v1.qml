@@ -36,13 +36,14 @@ Rectangle{
             color: r.cl
             anchors.right: parent.horizontalCenter
             Rectangle{
-                width: zoolMap.bodieSize
+                width: zoolMap.bodieSize*1.2
                 height: width
                 radius: width*0.5
                 color: 'transparent'
                 border.width: zoolMap.wl
                 border.color: r.cl
                 anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: 0-parent.height*0.5
                 anchors.right: parent.left
                 Rectangle{
                     color: apps.backgroundColor
@@ -74,7 +75,7 @@ Rectangle{
                 }
                 Text{
                     text: '<b>'+parseInt(r.ih+1)+'</b>'
-                    font.pixelSize: zoolMap.bodieSize*0.55
+                    font.pixelSize: parent.width*0.5//zoolMap.bodieSize*0.4
                     color: r.cl
                     rotation: 360-r.rotation
                     horizontalAlignment: Text.AlignHCenter

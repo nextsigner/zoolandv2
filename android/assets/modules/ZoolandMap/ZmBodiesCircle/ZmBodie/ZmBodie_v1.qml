@@ -18,7 +18,7 @@ Rectangle{
         if(pos<0)return
         //tSetAspsWidth.restart()
     }
-    onRotationChanged: setStatus(false)
+    //onRotationChanged: setStatus(false)
     //Behavior on width{NumberAnimation{duration: 0}}
     Timer{
         id: tSetAspsWidth
@@ -46,6 +46,9 @@ Rectangle{
             from: "red"
             to: "yellow"
             duration: 250
+        }
+        ScriptAction{
+            script: setStatus(false)
         }
     }
 
@@ -178,7 +181,7 @@ Rectangle{
             }
         }
     }
-    function setStatus(fromClick){
+    function setStatus(fromClick, update){
         if(fromClick){
             if(!r.isExt && zoolMap.currentIndexBodie===r.numBodie){
                 zoolMap.currentIndexBodie=-1
@@ -214,15 +217,15 @@ Rectangle{
         let rsgdeg=0
         //if(fromClick){
             if(!r.isExt){
-                if(fromClick)zoolMap.currentIndexBodie=r.numBodie
-                if(fromClick)zoolMap.currentIndexSign=r.is
-                if(fromClick)zoolMap.currentIndexHouse=r.ih
+                zoolMap.currentIndexBodie=r.numBodie
+                zoolMap.currentIndexSign=r.is
+                zoolMap.currentIndexHouse=r.ih
                 rsgdeg=parseInt(gms.deg-(30*(r.is)))
                 zoolMap.currentStrDdMmSs='°'+rsgdeg+' \''+gms.min+'\'\''+parseInt(gms.sec)
             }else{
-                if(fromClick)zoolMap.currentIndexBodieExt=r.numBodie
+                zoolMap.currentIndexBodieExt=r.numBodie
                 zoolMap.currentIndexSignExt=r.is
-                if(fromClick)zoolMap.currentIndexHouseExt=r.ih
+                zoolMap.currentIndexHouseExt=r.ih
                 rsgdeg=parseInt(gms.deg-(30*(r.is)))
                 zoolMap.currentStrDdMmSsExt='°'+rsgdeg+' \''+gms.min+'\'\''+parseInt(gms.sec)
             }
